@@ -6,6 +6,8 @@ Tests to verify the CommandGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
+from libcommand import CommandGroup
+from libcommand import Command
 import sys
 import os
 import unittest
@@ -16,342 +18,365 @@ import time
 sys.path.append("./")
 sys.path.append("../")
 
-from libcommand import Command
-from libcommand import CommandGroup
-
-
 
 class TestCommandGroup(unittest.TestCase):
 
-  _sdirectory = ''
-  _smodule = ''
-  _stestscript = 'command_script.py'
-  _iteststatus = 4
+    _sdirectory = ''
+    _smodule = ''
+    _stestscript = 'command_script.py'
+    _iteststatus = 4
 
+    def setUp(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-  def setUp(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self._sdirectory = os.getcwd() + '/'
+        self._stestscript = 'command_script.py'
 
-    self._sdirectory = os.getcwd() + '/'
-    self._stestscript = 'command_script.py'
+        spath = os.path.abspath(__file__)
 
-    spath = os.path.abspath(__file__);
+        slashpos = spath.rfind('/', 0)
 
-    slashpos = spath.rfind('/', 0)
+        if slashpos != -1:
+            self._sdirectory = spath[0: slashpos + 1]
+            self._smodule = spath[slashpos + 1: len(spath)]
+        else:
+            self._smodule = spath
 
-    if slashpos != -1 :
-      self._sdirectory = spath[0 : slashpos + 1]
-      self._smodule = spath[slashpos + 1 : len(spath)]
-    else :
-      self._smodule = spath
+        print("setUp - Test Directory: '{}'".format(self._sdirectory))
+        print("setUp - Test Module: '{}'".format(self._smodule))
+        print("")
 
-    print("setUp - Test Directory: '{}'".format(self._sdirectory))
-    print("setUp - Test Module: '{}'".format(self._smodule))
-    print("")
+    def tearDown(self):
+        pass
 
+    def test_CommandGroupRun(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-  def tearDown(self):
-    pass
+        self._stestscript = 'command_script.py'
 
+        cmdgrp = CommandGroup()
+        imaxpause = 3
 
-  def test_CommandGroupRun(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        cmd = Command(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 2), {
+                'name': 'command-script:2s'})
 
-    self._stestscript = 'command_script.py'
+        cmdgrp.Add(cmd)
 
-    cmdgrp = CommandGroup();
-    imaxpause = 3
+        cmd = Command(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 3), {
+                'name': 'command-script:3s'})
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 2)\
-    , {'name': 'command-script:2s'})
+        cmdgrp.Add(cmd)
 
-    cmdgrp.Add(cmd)
+        cmd = Command(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 1), {
+                'name': 'command-script:1s'})
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
-    , {'name': 'command-script:3s'})
+        cmdgrp.Add(cmd)
 
-    cmdgrp.Add(cmd)
+        cmdcnt = cmdgrp.len
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 1)\
-    , {'name': 'command-script:1s'})
+        self.assertEqual(
+            cmdcnt,
+            3,
+            "scripts (count: '{}'): were not added correctly".format(cmdcnt))
 
-    cmdgrp.Add(cmd)
+        itm = -1
+        itmstrt = time.time()
+        itmend = -1
 
-    cmdcnt = cmdgrp.len
+        print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    self.assertEqual(cmdcnt, 3, "scripts (count: '{}'): were not added correctly".format(cmdcnt))
+        # Execute the Commands
+        bcmdrs = cmdgrp.Run()
 
-    itm = -1
-    itmstrt = time.time()
-    itmend = -1
+        itmend = time.time()
+        itm = (itmend - itmstrt) * 1000
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Command Group Execution finished in '{}' ms".format(itm))
 
-    #Execute the Commands
-    bcmdrs = cmdgrp.Run()
+        itm = int(itmend - itmstrt)
 
-    itmend = time.time()
-    itm = (itmend - itmstrt) * 1000;
+        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    itm = int(itmend - itmstrt)
+        self.assertTrue(
+            bcmdrs,
+            "Command Group Execution: Execution was not correct")
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+        self.assertEqual(
+            itm,
+            imaxpause,
+            "Command Group Execution longer than maximal Execution Time '{}' s" .format(imaxpause))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+        self.assertEqual(
+            cmdgrp.code,
+            0,
+            "Process Group Execution: ERROR CODE is not correct")
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+        for icmd in range(0, cmdcnt):
+            cmd = cmdgrp.getiCommand(icmd)
 
-    self.assertEqual(itm, imaxpause, "Command Group Execution longer than maximal Execution Time '{}' s"\
-    .format(imaxpause))
+            self.assertIsNotNone(
+                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
 
-    self.assertEqual(cmdgrp.code, 0, "Process Group Execution: ERROR CODE is not correct")
+            if cmd is not None:
+                print("Command {}:".format(cmd.getNameComplete()))
 
-    for icmd in range(0, cmdcnt) :
-      cmd = cmdgrp.getiCommand(icmd);
+                scriptlog = cmd.report
+                scripterror = cmd.error
+                iscriptstatus = cmd.status
 
-      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                print("ERROR CODE: '{}'".format(cmd.code))
+                print("EXIT CODE: '{}'".format(iscriptstatus))
 
-      if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+                if scriptlog is not None:
+                    print("STDOUT:\n'{}'".format(scriptlog))
+                else:
+                    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-        scriptlog = cmd.report
-        scripterror = cmd.error
-        iscriptstatus = cmd.status
+                if scripterror is not None:
+                    print("STDERR:\n'{}'".format(scripterror))
+                else:
+                    self.assertIsNotNone(
+                        scripterror, "STDERR was not captured")
 
-        print("ERROR CODE: '{}'".format(cmd.code))
-        print("EXIT CODE: '{}'".format(iscriptstatus))
+            # if cmd is not None
+        # for icmd in range(0, cmdcnt)
 
-        if scriptlog is not None :
-          print("STDOUT:\n'{}'".format(scriptlog))
-        else :
-          self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+        print("")
 
-        if scripterror is not None :
-          print("STDERR:\n'{}'".format(scripterror))
-        else :
-          self.assertIsNotNone(scripterror, "STDERR was not captured")
+    def test_CommandGroupProfiling(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-      #if cmd is not None
-    #for icmd in range(0, cmdcnt)
+        self._stestscript = 'command_script.py'
 
-    print("")
+        cmdgrp = CommandGroup()
+        imaxpause = 9
 
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
+                      'name': 'command-script:9s', 'profiling': True})
 
-  def test_CommandGroupProfiling(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-    self._stestscript = 'command_script.py'
+        cmdgrp.Add(cmd)
 
-    cmdgrp = CommandGroup()
-    imaxpause = 9
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
+                      'name': 'command-script:3s', 'profiling': True})
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
-    , {'name': 'command-script:9s', 'profiling': True})
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        cmdgrp.Add(cmd)
 
-    cmdgrp.Add(cmd)
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
+                      'name': 'command-script:5s', 'profiling': True})
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
-    , {'name': 'command-script:3s', 'profiling': True})
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        cmdgrp.Add(cmd)
 
-    cmdgrp.Add(cmd)
+        cmdgrp.setReadTimeout(2)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
-    , {'name': 'command-script:5s', 'profiling': True})
+        cmdcnt = cmdgrp.len
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        self.assertEqual(
+            cmdcnt,
+            3,
+            "scripts (count: '{}'): were not added correctly".format(cmdcnt))
 
-    cmdgrp.Add(cmd)
+        itm = -1
+        itmstrt = time.time()
+        itmend = -1
 
-    cmdgrp.setReadTimeout(2)
+        print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    cmdcnt = cmdgrp.len
+        # Execute the Commands
+        bcmdrs = cmdgrp.Run()
 
-    self.assertEqual(cmdcnt, 3, "scripts (count: '{}'): were not added correctly".format(cmdcnt))
+        itmend = time.time()
+        itm = (itmend - itmstrt) * 1000
 
-    itm = -1
-    itmstrt = time.time()
-    itmend = -1
+        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Command Group Execution finished in '{}' ms".format(itm))
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+        itm = int(itmend - itmstrt)
 
-    #Execute the Commands
-    bcmdrs = cmdgrp.Run()
+        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    itmend = time.time()
-    itm = (itmend - itmstrt) * 1000;
+        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+        self.assertTrue(
+            bcmdrs,
+            "Command Group Execution: Execution was not correct")
 
-    itm = int(itmend - itmstrt)
+        for icmd in range(0, cmdcnt):
+            cmd = cmdgrp.getiCommand(icmd)
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+            self.assertIsNotNone(
+                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+            if cmd is not None:
+                print("Command {}:".format(cmd.getNameComplete()))
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+                scriptlog = cmd.report
+                scripterror = cmd.error
+                iscriptstatus = cmd.status
 
-    for icmd in range(0, cmdcnt) :
-      cmd = cmdgrp.getiCommand(icmd);
+                print("Read Timeout: '{}'".format(cmd.read_timeout))
+                print("Execution Time: '{}'".format(cmd.execution_time))
 
-      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                self.assertNotEqual(
+                    cmd.read_timeout, 0, "Read Timeout was not activated")
+                self.assertNotEqual(
+                    cmd.execution_time, -1, "Execution Time was not measured")
 
-      if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+                print("ERROR CODE: '{}'".format(cmd.code))
+                print("EXIT CODE: '{}'".format(iscriptstatus))
 
-        scriptlog = cmd.report
-        scripterror = cmd.error
-        iscriptstatus = cmd.status
+                if scriptlog is not None:
+                    print("STDOUT:\n'{}'".format(scriptlog))
+                else:
+                    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-        print("Read Timeout: '{}'".format(cmd.read_timeout));
-        print("Execution Time: '{}'".format(cmd.execution_time));
+                if scripterror is not None:
+                    print("STDERR:\n'{}'".format(scripterror))
+                else:
+                    self.assertIsNotNone(
+                        scripterror, "STDERR was not captured")
 
-        self.assertNotEqual(cmd.read_timeout, 0, "Read Timeout was not activated")
-        self.assertNotEqual(cmd.execution_time, -1, "Execution Time was not measured")
+            # if cmd is not None
+        # for icmd in range(0, cmdcnt)
 
-        print("ERROR CODE: '{}'".format(cmd.code))
-        print("EXIT CODE: '{}'".format(iscriptstatus))
+        print("")
 
-        if scriptlog is not None :
-          print("STDOUT:\n'{}'".format(scriptlog))
-        else :
-          self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+    def test_CommandGroupProfilingQuiet(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-        if scripterror is not None :
-          print("STDERR:\n'{}'".format(scripterror))
-        else :
-          self.assertIsNotNone(scripterror, "STDERR was not captured")
+        self._stestscript = 'quiet_script.py'
 
-      #if cmd is not None
-    #for icmd in range(0, cmdcnt)
+        cmdgrp = CommandGroup()
+        imaxpause = 9
 
-    print("")
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
+                      'name': 'quiet-script:9s', 'profiling': True})
 
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-  def test_CommandGroupProfilingQuiet(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        cmdgrp.Add(cmd)
 
-    self._stestscript = 'quiet_script.py'
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
+                      'name': 'quiet-script:3s', 'profiling': True})
 
-    cmdgrp = CommandGroup()
-    imaxpause = 9
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
-    , {'name': 'quiet-script:9s', 'profiling': True})
+        cmdgrp.Add(cmd)
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
+                      'name': 'quiet-script:5s', 'profiling': True})
 
-    cmdgrp.Add(cmd)
+        self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
-    , {'name': 'quiet-script:3s', 'profiling': True})
+        cmdgrp.Add(cmd)
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        cmdcnt = cmdgrp.len
 
-    cmdgrp.Add(cmd)
+        self.assertEqual(
+            cmdcnt,
+            3,
+            "scripts (count: '{}'): were not added correctly".format(cmdcnt))
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
-    , {'name': 'quiet-script:5s', 'profiling': True})
+        cmdgrp.setCheckInterval(6)
 
-    self.assertTrue(cmd.profiling, 'Profiling is not activated')
+        self.assertNotEqual(cmdgrp.setCheckInterval(
+            6), -1, "Check Interval was not activated")
 
-    cmdgrp.Add(cmd)
+        itm = -1
+        itmstrt = time.time()
+        itmend = -1
 
-    cmdcnt = cmdgrp.len
+        print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    self.assertEqual(cmdcnt, 3, "scripts (count: '{}'): were not added correctly".format(cmdcnt))
+        # Execute the Commands
+        bcmdrs = cmdgrp.Run()
 
-    cmdgrp.setCheckInterval(6)
+        itmend = time.time()
+        itm = (itmend - itmstrt) * 1000
 
-    self.assertNotEqual(cmdgrp.setCheckInterval(6), -1, "Check Interval was not activated")
+        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Command Group Execution finished in '{}' ms".format(itm))
 
-    itm = -1
-    itmstrt = time.time()
-    itmend = -1
+        itm = int(itmend - itmstrt)
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    #Execute the Commands
-    bcmdrs = cmdgrp.Run()
+        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    itmend = time.time()
-    itm = (itmend - itmstrt) * 1000;
+        self.assertTrue(
+            bcmdrs,
+            "Command Group Execution: Execution was not correct")
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+        for icmd in range(0, cmdcnt):
+            cmd = cmdgrp.getiCommand(icmd)
 
-    itm = int(itmend - itmstrt)
+            self.assertIsNotNone(
+                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+            if cmd is not None:
+                print("Command {}:".format(cmd.getNameComplete()))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+                scriptlog = cmd.report
+                scripterror = cmd.error
+                iscriptstatus = cmd.status
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+                print("Read Timeout: '{}'".format(cmd.read_timeout))
+                print("Execution Time: '{}'".format(cmd.execution_time))
 
-    for icmd in range(0, cmdcnt) :
-      cmd = cmdgrp.getiCommand(icmd);
+                self.assertNotEqual(
+                    cmd.read_timeout, 0, "Read Timeout was not activated")
+                self.assertNotEqual(
+                    cmd.execution_time, -1, "Execution Time was not measured")
 
-      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                print("ERROR CODE: '{}'".format(cmd.code))
+                print("EXIT CODE: '{}'".format(iscriptstatus))
 
-      if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+                if scriptlog is not None:
+                    print("STDOUT:\n'{}'".format(scriptlog))
+                else:
+                    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-        scriptlog = cmd.report
-        scripterror = cmd.error
-        iscriptstatus = cmd.status
+                if scripterror is not None:
+                    print("STDERR:\n'{}'".format(scripterror))
+                else:
+                    self.assertIsNotNone(
+                        scripterror, "STDERR was not captured")
 
-        print("Read Timeout: '{}'".format(cmd.read_timeout));
-        print("Execution Time: '{}'".format(cmd.execution_time));
+            # if cmd is not None
+        # for icmd in range(0, cmdcnt)
 
-        self.assertNotEqual(cmd.read_timeout, 0, "Read Timeout was not activated")
-        self.assertNotEqual(cmd.execution_time, -1 , "Execution Time was not measured")
-
-        print("ERROR CODE: '{}'".format(cmd.code))
-        print("EXIT CODE: '{}'".format(iscriptstatus))
-
-        if scriptlog is not None :
-          print("STDOUT:\n'{}'".format(scriptlog))
-        else :
-          self.assertIsNotNone(scriptlog, "STDOUT was not captured")
-
-        if scripterror is not None :
-          print("STDERR:\n'{}'".format(scripterror))
-        else :
-          self.assertIsNotNone(scripterror, "STDERR was not captured")
-
-      #if cmd is not None
-    #for icmd in range(0, cmdcnt)
-
-    print("")
-
-
-
-
-
+        print("")
 
 
 if __name__ == "__main__":
-  print("test module: '{}'".format(__file__))
+    print("test module: '{}'".format(__file__))
 
-  spath = os.path.abspath(__file__)
+    spath = os.path.abspath(__file__)
 
-  print("test module absolute path: '{}'".format(spath))
+    print("test module absolute path: '{}'".format(spath))
 
-  print("tests starting ...\n")
-  #import sys;sys.argv = ['', 'Test.testConstructor']
-  unittest.main()
+    print("tests starting ...\n")
+    #import sys;sys.argv = ['', 'Test.testConstructor']
+    unittest.main()
 
-  print("tests done.\n")
+    print("tests done.\n")

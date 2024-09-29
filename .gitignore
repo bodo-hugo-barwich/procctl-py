@@ -6,6 +6,8 @@
 */__pycache__/*
 */os
 */unittest
+dist/**
+pycommand.egg-info/**
 
 #Exclude Test Log Files
 *.log

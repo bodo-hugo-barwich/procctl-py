@@ -1,0 +1,22 @@
+[project]
+name = "pycommand"
+version = "1.0.0"
+authors = [
+  { name="Bodo (Hugo) Barwich", email="b.barwich@hotmail.com" },
+]
+description = "Classes to launch Child Processes asynchronously"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/bodo-hugo-barwich/pycommand"
+Issues = "https://github.com/bodo-hugo-barwich/pycommand/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
