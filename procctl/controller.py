@@ -1,8 +1,8 @@
 '''
-This Module provides the `Command` Class which launches a Single Child Process
-in asynchronous Mode and captures possible Errors.
+This module provides the `ProcessController` class which launches a single child process
+in asynchronous mode and captures possible errors.
 
-:version: 2021-04-25
+:version: 2025-09-26
 
 :author: Bodo Hugo Barwich
 '''
@@ -17,15 +17,15 @@ from shlex import split
 
 
 #==============================================================================
-# The Command Class
+# The ProcessController Class
 
 
-class Command(object):
+class ProcessController(object):
   '''
-  This is a Class launches a Child Process and reads its STDOUT and STDERR continuously
-  and stores them in Memory
+  This is a class which launches a child process and reads its STDOUT and STDERR continuously
+  and stores them in memory
 
-  It offers Methods to access the Result Output and possible Errors
+  It offers methods to access the Rrsult output and possible errors
   '''
 
 
@@ -85,7 +85,7 @@ class Command(object):
 
 
   #-----------------------------------------------------------------------------------------
-  #Administration Methods
+  # Administration Methods
 
 
   def setDictOptions(self, options = {}):

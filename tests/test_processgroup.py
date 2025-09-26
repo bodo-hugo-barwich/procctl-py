@@ -15,8 +15,8 @@ from re import IGNORECASE
 sys.path.append("./")
 sys.path.append("../")
 
-from libcommand import Command
-from libcommand import CommandGroup
+from procctl import ProcessController
+from procctl import ProcessGroup
 
 
 
@@ -48,20 +48,20 @@ def test_CommandGroupRun():
 
   stestscript = 'command_script.py'
 
-  cmdgrp = CommandGroup();
+  cmdgrp = ProcessGroup();
   imaxpause = 3
 
-  cmd = Command("{}{} {}".format(sdirectory, stestscript, 2)\
+  cmd = ProcessController("{}{} {}".format(sdirectory, stestscript, 2)\
   , {'name': 'command-script:2s'})
 
   cmdgrp.Add(cmd)
 
-  cmd = Command("{}{} {}".format(sdirectory, stestscript, 3)\
+  cmd = ProcessController("{}{} {}".format(sdirectory, stestscript, 3)\
   , {'name': 'command-script:3s'})
 
   cmdgrp.Add(cmd)
 
-  cmd = Command("{}{} {}".format(sdirectory, stestscript, 1)\
+  cmd = ProcessController("{}{} {}".format(sdirectory, stestscript, 1)\
   , {'name': 'command-script:1s'})
 
   cmdgrp.Add(cmd)

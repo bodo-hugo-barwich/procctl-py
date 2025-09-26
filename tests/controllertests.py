@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-25
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
@@ -15,12 +15,12 @@ from re import IGNORECASE
 sys.path.append("./")
 sys.path.append("../")
 
-from libcommand import Command
-from libcommand import runCommand
+from procctl import ProcessController
+from procctl import runCommand
 
 
 
-class TestCommand(unittest.TestCase):
+class TestProcessController(unittest.TestCase):
 
   _sdirectory = ''
   _smodule = ''
@@ -82,7 +82,7 @@ class TestCommand(unittest.TestCase):
     self._stestscript = 'command_script.py'
     self._itestpause = 3
 
-    cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
+    cmdtest = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
 
     cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
@@ -122,7 +122,7 @@ class TestCommand(unittest.TestCase):
     self._stestscript = 'command_script.py'
     self._itestpause = 30
 
-    cmdtest = Command("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
+    cmdtest = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
       , {'timeout': 5, 'check': 1, 'profiling': True})
 
     self.assertNotEqual(cmdtest.getTimeout(), -1, 'Execution Timeout is not set')
@@ -175,7 +175,7 @@ class TestCommand(unittest.TestCase):
 
     self._stestscript = 'no_script.sh'
 
-    cmdtest = Command(self._sdirectory + self._stestscript)
+    cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -222,7 +222,7 @@ class TestCommand(unittest.TestCase):
 
     self._stestscript = 'noexec_script.py'
 
-    cmdtest = Command(self._sdirectory + self._stestscript)
+    cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -269,7 +269,7 @@ class TestCommand(unittest.TestCase):
 
     self._stestscript = 'nobashbang_script.py'
 
-    cmdtest = Command(self._sdirectory + self._stestscript)
+    cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -308,7 +308,7 @@ class TestCommand(unittest.TestCase):
 
     self._stestscript = 'exception_script.py'
 
-    cmdtest = Command(self._sdirectory + self._stestscript)
+    cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 

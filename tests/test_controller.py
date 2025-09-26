@@ -2,7 +2,7 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-16
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
@@ -14,8 +14,8 @@ from re import IGNORECASE
 sys.path.append("./")
 sys.path.append("../")
 
-from libcommand import Command
-from libcommand import runCommand
+from procctl import ProcessController
+from procctl import runCommand
 
 
 
@@ -69,7 +69,7 @@ def test_ReadTimeout():
   stestscript = 'command_script.py'
   itestpause = 3
 
-  cmdtest = Command("{}{} {}".format(sdirectory, stestscript, itestpause))
+  cmdtest = ProcessController("{}{} {}".format(sdirectory, stestscript, itestpause))
 
   cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
@@ -109,7 +109,7 @@ def test_ExecutionTimeout():
   stestscript = 'command_script.py'
   itestpause = 30
 
-  cmdtest = Command("{}{} {}".format(sdirectory, stestscript, itestpause)\
+  cmdtest = ProcessController("{}{} {}".format(sdirectory, stestscript, itestpause)\
     , {'timeout': 5, 'check': 1, 'profiling': True})
 
   assert cmdtest.getTimeout() != -1, 'Execution Timeout is not set'
@@ -162,7 +162,7 @@ def test_ScriptNotFound():
 
   stestscript = 'no_script.sh'
 
-  cmdtest = Command(sdirectory + stestscript)
+  cmdtest = ProcessController(sdirectory + stestscript)
 
   brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -209,7 +209,7 @@ def test_NoPermission():
 
   stestscript = 'noexec_script.py'
 
-  cmdtest = Command(sdirectory + stestscript)
+  cmdtest = ProcessController(sdirectory + stestscript)
 
   brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -256,7 +256,7 @@ def test_BashError():
 
   stestscript = 'nobashbang_script.py'
 
-  cmdtest = Command(sdirectory + stestscript)
+  cmdtest = ProcessController(sdirectory + stestscript)
 
   brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -295,7 +295,7 @@ def test_PythonException():
 
   stestscript = 'exception_script.py'
 
-  cmdtest = Command(sdirectory + stestscript)
+  cmdtest = ProcessController(sdirectory + stestscript)
 
   brunok = cmdtest.Launch() and cmdtest.Wait()
 

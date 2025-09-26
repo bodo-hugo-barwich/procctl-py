@@ -1,13 +1,13 @@
 '''
-This Module provides static functions to interact with `Command` objects
+This module provides static functions to interact with `ProcessController` objects
 
-@version: 2021-04-17
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
 __docformat__ = "restructuredtext en"
 
-from .command import Command
+from .controller import ProcessController
 
 
 
@@ -25,20 +25,20 @@ def runCommand(scommandline = '', options = {}):
 
   arrrs = ['', '', 0]
 
-  cmd = Command(scommandline, options)
+  ctl = ProcessController(scommandline, options)
 
-  if(cmd.Launch()):
-    cmd.Wait()
+  if(ctl.Launch()):
+    ctl.Wait()
 
-  arrrs[0] = cmd.getReportString()
-  arrrs[1] = cmd.getErrorString()
-  arrrs[2] = cmd.getProcessStatus()
+  arrrs[0] = ctl.getReportString()
+  arrrs[1] = ctl.getErrorString()
+  arrrs[2] = ctl.getProcessStatus()
 
   if arrrs[2] == -1 :
-    arrrs[2] = cmd.getErrorCode()
+    arrrs[2] = ctl.getErrorCode()
 
-  cmd.freeResources()
-  cmd = None
+  ctl.freeResources()
+  ctl = None
 
   return arrrs
 
@@ -54,21 +54,21 @@ def runCommandWithOptions(commandoptions = {}):
   arrrs = ['', '', 0]
 
   if('command' in commandoptions):
-    cmd = Command()
+    ctl = ProcessController()
 
-    cmd.setDictOptions(commandoptions)
+    ctl.setDictOptions(commandoptions)
 
-    if(cmd.Launch()):
-      cmd.Wait()
+    if(ctl.Launch()):
+      ctl.Wait()
 
-      arrrs[0] = cmd.getReportString()
-      arrrs[1] = cmd.getErrorString()
-      arrrs[2] = cmd.getProcessStatus()
+      arrrs[0] = ctl.getReportString()
+      arrrs[1] = ctl.getErrorString()
+      arrrs[2] = ctl.getProcessStatus()
 
       if arrrs[2] == -1 :
-        arrrs[2] = cmd.getErrorCode()
+        arrrs[2] = ctl.getErrorCode()
 
-      cmd.freeResources()
+      ctl.freeResources()
 
     else: #if(cmd.Launch())
       arrrs[2] = 1

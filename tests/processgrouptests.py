@@ -2,7 +2,7 @@
 '''
 Tests to verify the CommandGroup Class Functionality
 
-@version: 2021-04-25
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
@@ -16,8 +16,8 @@ import time
 sys.path.append("./")
 sys.path.append("../")
 
-from libcommand import Command
-from libcommand import CommandGroup
+from procctl import ProcessController
+from procctl import ProcessGroup
 
 
 
@@ -59,20 +59,20 @@ class TestCommandGroup(unittest.TestCase):
 
     self._stestscript = 'command_script.py'
 
-    cmdgrp = CommandGroup();
+    cmdgrp = ProcessGroup();
     imaxpause = 3
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 2)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 2)\
     , {'name': 'command-script:2s'})
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
     , {'name': 'command-script:3s'})
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 1)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 1)\
     , {'name': 'command-script:1s'})
 
     cmdgrp.Add(cmd)
@@ -147,24 +147,24 @@ class TestCommandGroup(unittest.TestCase):
 
     self._stestscript = 'command_script.py'
 
-    cmdgrp = CommandGroup()
+    cmdgrp = ProcessGroup()
     imaxpause = 9
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
     , {'name': 'command-script:9s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
     , {'name': 'command-script:3s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
     , {'name': 'command-script:5s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
@@ -244,24 +244,24 @@ class TestCommandGroup(unittest.TestCase):
 
     self._stestscript = 'quiet_script.py'
 
-    cmdgrp = CommandGroup()
+    cmdgrp = ProcessGroup()
     imaxpause = 9
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 9)\
     , {'name': 'quiet-script:9s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 3)\
     , {'name': 'quiet-script:3s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
     cmdgrp.Add(cmd)
 
-    cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
+    cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 5)\
     , {'name': 'quiet-script:5s', 'profiling': True})
 
     self.assertTrue(cmd.profiling, 'Profiling is not activated')
@@ -336,10 +336,6 @@ class TestCommandGroup(unittest.TestCase):
     #for icmd in range(0, cmdcnt)
 
     print("")
-
-
-
-
 
 
 

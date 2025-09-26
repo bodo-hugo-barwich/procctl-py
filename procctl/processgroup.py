@@ -1,8 +1,8 @@
 '''
-This Module provides the `CommandGroup` Class which manages multiple `Command` objects.
-It executes and monitores the `Command` objects.
+This module provides the `ProcessGroup` class which manages multiple `ProcessController` objects.
+It executes and monitors the `ProcessController` objects.
 
-:version: 2021-04-18
+:version: 2025-09-26
 
 :author: Bodo Hugo Barwich
 '''
@@ -13,19 +13,19 @@ import math
 import time
 from datetime import datetime
 
-from .command import Command
+from .controller import ProcessController
 
 
 
 #==============================================================================
-# The CommandGroup Class
+# The ProcessGroup Class
 
 
-class CommandGroup(object):
+class ProcessGroup(object):
   '''
-  This is a Class to manage multiple `Command` object whom execution is related in time.
+  This is a Class to manage multiple `ProcessController` objects whose execution is related in time.
 
-  It offers Methods to run, monitor and access the `Command` objects
+  It offers Methods to run, monitor and access the `ProcessController` objects
   '''
 
 
@@ -163,7 +163,7 @@ class CommandGroup(object):
     if ocommand is not None :
       ors = ocommand
 
-      if not isinstance(ors, Command) :
+      if not isinstance(ors, ProcessController) :
         ors = None
 
     #if ocommand is not None
@@ -171,7 +171,7 @@ class CommandGroup(object):
     if ors is None :
       #Create a new Command Object
       #Pass the Read Timeout to the new Object
-      ors = Command(None, {'readtimeout': self._read_timeout})
+      ors = ProcessController(None, {'readtimeout': self._read_timeout})
 
     #Add the Command Object to the List
     self._arr_commands.append(ors)
@@ -181,7 +181,7 @@ class CommandGroup(object):
 
   def addsCommandLine(self, scommandline = '', options = {}):
     #Create a new Command Object
-    ors = Command(scommandline, options)
+    ors = ProcessController(scommandline, options)
 
     #Add the Command Object to the List
     self._arr_commands.append(ors)

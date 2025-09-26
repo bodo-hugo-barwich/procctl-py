@@ -1,20 +1,20 @@
-[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/pycommand)
+[![Automated Tests](https://github.com/bodo-hugo-barwich/procctl-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://travis-ci.com/bodo-hugo-barwich/procctl-py.svg?branch=master)](https://travis-ci.com/bodo-hugo-barwich/procctl-py)
 
-# Command
+# ProcessController
 
-Command - Python Package for Multiprocessing
+ProcessController - Python Package for Multiprocessing
 
-Provides Classes to launch Child Processes asynchronously.\
-The **Object Oriented Design** allows to create Groups of Child Processes and Child Process Pools to launch several child processes in an organized manner.
+Provides classes to launch child processes asynchronously.\
+The **Object Oriented Design** allows to create groups of child processes to launch several child processes in an organized manner.
 
 ## Features
 Some important Features are:
-* Low Dependencies (uses only Python Core Packages)\
+* Low Dependencies (uses only _Python_ core packages)\
   Low Dependency Usage leads to:
-  	* Very High Compatibility (only Python 3 is required)
+  	* Very High Compatibility (only _Python 3_ is required)
   	* Easy Installation
-	* Small Memory Footprint (Simple Structure Design leads to low Memory Usage)
-	* Fast Startup (very few additional Libraries to load)
+	* Small Memory Footprint (simple structure design leads to low memory usage)
+	* Fast Startup (very few additional libraries to load)
 * Asynchronous Launch
 * Reads Big Outputs
 * Execution Timeout
@@ -23,7 +23,7 @@ Some important Features are:
 * Streamlined Error Handling while still providing the Outputs
 
 ## Motivation
-This Module was conceived out of the need to launch multiple Tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
+This module was conceived out of the need to launch multiple Tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
 As I developed it as Prototype at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
@@ -31,18 +31,18 @@ Providing a similar functionality as the [`subprocess.run()` Function](https://d
 This implementation aimes especially for Low Dependencies and Easy Installation.
 
 ### Example Use Case
-The Power of this Library is best shown by an Example Use Case as seen in the `test_CommandGroupRun()` Test:\
+The power of this library is best shown by an example use case as seen in the `test_CommandGroupRun()` Test:\
 Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.\
 But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.\
 And still each Job can be evaluated separately by their own Results keeping Log Message separate from Error Messages and viewing them in their context.
 ```text
-test module: './commandgrouptests.py'
-test module absolute path: '/path/to/pycommand/tests/commandgrouptests.py'
+test module: './processgrouptests.py'
+test module absolute path: '/path/to/procctl-py/tests/processgrouptests.py'
 tests starting ...
 
 setUp - go ...
-setUp - Test Directory: '/path/to/pycommand/tests/'
-setUp - Test Module: 'commandgrouptests.py'
+setUp - Test Directory: '/path/to/procctl-py/tests/'
+setUp - Test Module: 'processgrouptests.py'
 
 test_CommandGroupRun - go ...
 Command Group Execution Start - Time Now: '1619352416.777284' s
