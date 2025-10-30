@@ -16,7 +16,7 @@ sys.path.append("./")
 sys.path.append("../")
 
 from procctl import ProcessController
-from procctl import runCommand
+from procctl import runProcess
 
 
 
@@ -55,13 +55,13 @@ class TestProcessController(unittest.TestCase):
     pass
 
 
-  def test_RunCommand(self):
+  def test_RunProcess(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._stestscript = 'command_script.py'
     self._itestpause = 3
 
-    arrrs = runCommand("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
+    arrrs = runProcess("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
 
     print("EXIT CODE: '{}'".format(arrrs[2]));
 

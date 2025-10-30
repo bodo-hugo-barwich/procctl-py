@@ -11,7 +11,7 @@ from .controller import ProcessController
 
 
 
-def runCommand(scommandline = '', options = {}):
+def runProcess(scommandline = '', options = {}):
   '''
   This Method launches a process defined by `scommandline` in a separate child process
 
@@ -43,7 +43,7 @@ def runCommand(scommandline = '', options = {}):
   return arrrs
 
 
-def runCommandWithOptions(commandoptions = {}):
+def runProcessWithOptions(commandoptions = {}):
   '''
   This Method launches a process defined by `commandoptions['command']` in a separate child process
   Additional options in `commandoptions` are also configured before launching the child process
