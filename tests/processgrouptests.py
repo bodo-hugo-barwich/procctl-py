@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-Tests to verify the CommandGroup Class Functionality
+Tests to verify the ProcessGroup Class Functionality
 
 @version: 2025-09-26
 
@@ -21,7 +21,7 @@ from procctl import ProcessGroup
 
 
 
-class TestCommandGroup(unittest.TestCase):
+class TestProcessGroup(unittest.TestCase):
 
   _sdirectory = ''
   _smodule = ''
@@ -54,7 +54,7 @@ class TestCommandGroup(unittest.TestCase):
     pass
 
 
-  def test_CommandGroupRun(self):
+  def test_ProcessGroupRun(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._stestscript = 'command_script.py'
@@ -85,28 +85,28 @@ class TestCommandGroup(unittest.TestCase):
     itmstrt = time.time()
     itmend = -1
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+    print("Process Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    #Execute the Commands
+    #Execute the Processs
     bcmdrs = cmdgrp.Run()
 
     itmend = time.time()
     itm = (itmend - itmstrt) * 1000;
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+    print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+    print("Process Group Execution finished in '{}' ms".format(itm))
 
     itm = int(itmend - itmstrt)
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+    print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+    print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+    print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+    print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+    self.assertTrue(bcmdrs, "Process Group Execution: Execution was not correct");
 
-    self.assertEqual(itm, imaxpause, "Command Group Execution longer than maximal Execution Time '{}' s"\
+    self.assertEqual(itm, imaxpause, "Process Group Execution longer than maximal Execution Time '{}' s"\
     .format(imaxpause))
 
     self.assertEqual(cmdgrp.code, 0, "Process Group Execution: ERROR CODE is not correct")
@@ -117,7 +117,7 @@ class TestCommandGroup(unittest.TestCase):
       self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
 
       if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+        print("Process {}:".format(cmd.getNameComplete()))
 
         scriptlog = cmd.report
         scripterror = cmd.error
@@ -142,7 +142,7 @@ class TestCommandGroup(unittest.TestCase):
     print("")
 
 
-  def test_CommandGroupProfiling(self):
+  def test_ProcessGroupProfiling(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._stestscript = 'command_script.py'
@@ -181,34 +181,34 @@ class TestCommandGroup(unittest.TestCase):
     itmstrt = time.time()
     itmend = -1
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+    print("Process Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    #Execute the Commands
+    #Execute the Processes
     bcmdrs = cmdgrp.Run()
 
     itmend = time.time()
     itm = (itmend - itmstrt) * 1000;
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+    print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+    print("Process Group Execution finished in '{}' ms".format(itm))
 
     itm = int(itmend - itmstrt)
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+    print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+    print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+    print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+    print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+    self.assertTrue(bcmdrs, "Process Group Execution: Execution was not correct");
 
     for icmd in range(0, cmdcnt) :
       cmd = cmdgrp.getiCommand(icmd);
 
-      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+      self.assertIsNotNone(cmd, "Process No. '$iprc': Not listed correctly".format(icmd))
 
       if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+        print("Process {}:".format(cmd.getNameComplete()))
 
         scriptlog = cmd.report
         scripterror = cmd.error
@@ -239,7 +239,7 @@ class TestCommandGroup(unittest.TestCase):
     print("")
 
 
-  def test_CommandGroupProfilingQuiet(self):
+  def test_ProcessGroupProfilingQuiet(self):
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     self._stestscript = 'quiet_script.py'
@@ -280,34 +280,34 @@ class TestCommandGroup(unittest.TestCase):
     itmstrt = time.time()
     itmend = -1
 
-    print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+    print("Process Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
-    #Execute the Commands
+    #Execute the Processes
     bcmdrs = cmdgrp.Run()
 
     itmend = time.time()
     itm = (itmend - itmstrt) * 1000;
 
-    print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-    print("Command Group Execution finished in '{}' ms".format(itm))
+    print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+    print("Process Group Execution finished in '{}' ms".format(itm))
 
     itm = int(itmend - itmstrt)
 
-    print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+    print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-    print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-    print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-    print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+    print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+    print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+    print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
-    self.assertTrue(bcmdrs, "Command Group Execution: Execution was not correct");
+    self.assertTrue(bcmdrs, "Process Group Execution: Execution was not correct");
 
     for icmd in range(0, cmdcnt) :
       cmd = cmdgrp.getiCommand(icmd);
 
-      self.assertIsNotNone(cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+      self.assertIsNotNone(cmd, "Process No. '$iprc': Not listed correctly".format(icmd))
 
       if cmd is not None :
-        print("Command {}:".format(cmd.getNameComplete()))
+        print("Process {}:".format(cmd.getNameComplete()))
 
         scriptlog = cmd.report
         scripterror = cmd.error
