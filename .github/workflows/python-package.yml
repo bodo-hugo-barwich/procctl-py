@@ -14,8 +14,7 @@ on:
       
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version: ['3.10', '3.13']
@@ -44,14 +43,14 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 #        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=tests/nobashbang*
 
-    # "unittest" Test Suite for the Command Class
-    - name: unittest - Command Class Tests
-      run: tests/commandtests.py
+    # "unittest" Test Suite for the ProcessController Class
+    - name: unittest - ProcessController Class Tests
+      run: tests/controllertests.py
         
-    # "unittest" Test Suite for the CommandGroup Class
-    - name: unittest - CommandGroup Class Tests
-      run: tests/commandgrouptests.py
+    # "unittest" Test Suite for the ProcessGroup Class
+    - name: unittest - ProcessGroup Class Tests
+      run: tests/processgrouptests.py
         
-    # "pytest" Test Suite for the Command Class
-    - name: pytest - Command Class Tests
+    # "pytest" Test Suite for the ProcessController Class
+    - name: pytest - ProcessController Class Tests
       run: pytest
