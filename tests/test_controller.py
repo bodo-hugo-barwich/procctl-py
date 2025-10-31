@@ -6,12 +6,14 @@ Tests to verify the Command Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
-from procctl import runProcess
-from procctl import ProcessController
+import pytest
 import sys
 import os
 import re
-from re import IGNORECASE
+# from re import IGNORECASE
+
+from procctl import runProcess
+from procctl import ProcessController
 
 sys.path.append("./")
 sys.path.append("../")

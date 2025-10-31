@@ -6,13 +6,15 @@ Tests to verify the CommandGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
-from procctl import ProcessGroup
-from procctl import ProcessController
+import pytest
 import sys
 import os
 import time
 import re
 from re import IGNORECASE
+
+from procctl import ProcessGroup
+from procctl import ProcessController
 
 sys.path.append("./")
 sys.path.append("../")

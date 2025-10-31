@@ -10,7 +10,7 @@ import sys
 import os
 import unittest
 import re
-from re import IGNORECASE
+# from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
