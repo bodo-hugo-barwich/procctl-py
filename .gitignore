@@ -4,6 +4,7 @@
 
 #Python Compiling Files
 */__pycache__/*
+.pytest_cache
 */os
 */unittest
 dist/**
