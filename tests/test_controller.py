@@ -2,16 +2,18 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-16
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
-from libcommand import runCommand
-from libcommand import Command
+import pytest
 import sys
 import os
 import re
-from re import IGNORECASE
+# from re import IGNORECASE
+
+from procctl import runProcess
+from procctl import ProcessController
 
 sys.path.append("./")
 sys.path.append("../")
@@ -39,13 +41,13 @@ print("Test Directory: '{}'".format(sdirectory))
 print("Test Module: '{}'".format(smodule))
 
 
-def test_RunCommand():
+def test_RunProcess():
     print("{} - go ...".format(sys._getframe().f_code.co_name))
 
     stestscript = 'command_script.py'
     itestpause = 3
 
-    arrrs = runCommand(
+    arrrs = runProcess(
         "{}{} {} {}".format(
             sdirectory,
             stestscript,
@@ -71,7 +73,11 @@ def test_ReadTimeout():
     stestscript = 'command_script.py'
     itestpause = 3
 
-    cmdtest = Command("{}{} {}".format(sdirectory, stestscript, itestpause))
+    cmdtest = ProcessController(
+        "{}{} {}".format(
+            sdirectory,
+            stestscript,
+            itestpause))
 
     cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
@@ -92,12 +98,12 @@ def test_ReadTimeout():
     assert cmdtest.getExecutionTime() < cmdtest.getReadTimeout(
     ) * 2, "Measured Time is greater or equal than the Read Timeout"
 
-    if(scriptlog is not None):
+    if (scriptlog is not None):
         print("STDOUT: '{}'".format(scriptlog))
     else:
         assert scriptlog is not None, "STDOUT was not captured"
 
-    if(scripterror is not None):
+    if (scripterror is not None):
         print("STDERR: '{}'".format(scripterror))
     else:
         assert scripterror is not None, "STDERR was not captured"
@@ -111,8 +117,10 @@ def test_ExecutionTimeout():
     stestscript = 'command_script.py'
     itestpause = 30
 
-    cmdtest = Command("{}{} {}".format(sdirectory, stestscript, itestpause), {
-                      'timeout': 5, 'check': 1, 'profiling': True})
+    cmdtest = ProcessController(
+        "{}{} {}".format(
+            sdirectory, stestscript, itestpause), {
+            'timeout': 5, 'check': 1, 'profiling': True})
 
     assert cmdtest.getTimeout() != -1, 'Execution Timeout is not set'
     assert cmdtest.isProfiling(), 'Profiling is not enabled'
@@ -165,7 +173,7 @@ def test_ScriptNotFound():
 
     stestscript = 'no_script.sh'
 
-    cmdtest = Command(sdirectory + stestscript)
+    cmdtest = ProcessController(sdirectory + stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -215,7 +223,7 @@ def test_NoPermission():
 
     stestscript = 'noexec_script.py'
 
-    cmdtest = Command(sdirectory + stestscript)
+    cmdtest = ProcessController(sdirectory + stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -265,7 +273,7 @@ def test_BashError():
 
     stestscript = 'nobashbang_script.py'
 
-    cmdtest = Command(sdirectory + stestscript)
+    cmdtest = ProcessController(sdirectory + stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -306,7 +314,7 @@ def test_PythonException():
 
     stestscript = 'exception_script.py'
 
-    cmdtest = Command(sdirectory + stestscript)
+    cmdtest = ProcessController(sdirectory + stestscript)
 
     brunok = cmdtest.Launch() and cmdtest.Wait()
 

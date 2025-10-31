@@ -6,13 +6,15 @@ Tests to verify the CommandGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
-from libcommand import CommandGroup
-from libcommand import Command
+import pytest
 import sys
 import os
 import time
 import re
 from re import IGNORECASE
+
+from procctl import ProcessGroup
+from procctl import ProcessController
 
 sys.path.append("./")
 sys.path.append("../")
@@ -46,31 +48,31 @@ def test_CommandGroupRun():
 
     stestscript = 'command_script.py'
 
-    cmdgrp = CommandGroup()
+    cmdgrp = ProcessGroup()
     imaxpause = 3
 
-    cmd = Command(
+    cmd = ProcessController(
         "{}{} {}".format(
             sdirectory, stestscript, 2), {
             'name': 'command-script:2s'})
 
     cmdgrp.Add(cmd)
 
-    cmd = Command(
+    cmd = ProcessController(
         "{}{} {}".format(
             sdirectory, stestscript, 3), {
             'name': 'command-script:3s'})
 
     cmdgrp.Add(cmd)
 
-    cmd = Command(
+    cmd = ProcessController(
         "{}{} {}".format(
             sdirectory, stestscript, 1), {
             'name': 'command-script:1s'})
 
     cmdgrp.Add(cmd)
 
-    cmdcnt = cmdgrp.len
+    cmdcnt = cmdgrp.getProcessCount()
 
     assert cmdcnt == 3, "scripts (count: '{}'): were not added correctly".format(
         cmdcnt)
@@ -97,7 +99,7 @@ def test_CommandGroupRun():
         .format(imaxpause)
 
     for icmd in range(0, cmdcnt):
-        cmd = cmdgrp.getiCommand(icmd)
+        cmd = cmdgrp.getiProcess(icmd)
 
         assert cmd is not None, "Command No. '$iprc': Not listed correctly".format(
             icmd)

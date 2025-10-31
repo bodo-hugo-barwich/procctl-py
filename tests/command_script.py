@@ -41,7 +41,7 @@ else:
 print("script '{}' START 0 ERROR".format(smodule), file=sys.stderr, flush=True)
 
 
-if(len(sys.argv) > 1):
+if (len(sys.argv) > 1):
     try:
         ipause = int(sys.argv[1])
     except Exception as e:
@@ -61,7 +61,7 @@ if(len(sys.argv) > 1):
 else:
     ipause = 0
 
-if(len(sys.argv) > 2):
+if (len(sys.argv) > 2):
     try:
         ierr = int(sys.argv[2])
     except Exception as e:
@@ -81,7 +81,7 @@ if(len(sys.argv) > 2):
 else:
     ierr = 0
 
-if(ipause < 0):
+if (ipause < 0):
     print(
         "script '{}' Parameter '{}': Parameter Invalid! Positive Whole Number expected.".format(
             smodule,
@@ -89,7 +89,7 @@ if(ipause < 0):
         file=sys.stderr)
     ipause = 0
 
-if(ierr < 0):
+if (ierr < 0):
     print(
         "script '{}' Parameter '{}': Parameter Invalid! Positive Whole Number expected.".format(
             smodule,

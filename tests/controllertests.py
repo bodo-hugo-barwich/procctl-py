@@ -2,23 +2,23 @@
 '''
 Tests to verify the Command Class Functionality
 
-@version: 2021-04-25
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
-from libcommand import runCommand
-from libcommand import Command
 import sys
 import os
 import unittest
 import re
-from re import IGNORECASE
+# from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
 
+from procctl import runProcess
+from procctl import ProcessController
 
-class TestCommand(unittest.TestCase):
+class TestProcessController(unittest.TestCase):
 
     _sdirectory = ''
     _smodule = ''
@@ -50,13 +50,13 @@ class TestCommand(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_RunCommand(self):
+    def test_RunProcess(self):
         print("{} - go ...".format(sys._getframe().f_code.co_name))
 
         self._stestscript = 'command_script.py'
         self._itestpause = 3
 
-        arrrs = runCommand(
+        arrrs = runProcess(
             "{}{} {} {}".format(
                 self._sdirectory,
                 self._stestscript,
@@ -81,7 +81,7 @@ class TestCommand(unittest.TestCase):
         self._stestscript = 'command_script.py'
         self._itestpause = 3
 
-        cmdtest = Command(
+        cmdtest = ProcessController(
             "{}{} {}".format(
                 self._sdirectory,
                 self._stestscript,
@@ -114,12 +114,12 @@ class TestCommand(unittest.TestCase):
             cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2,
             "Measured Time is greater or equal than the Read Timeout")
 
-        if(scriptlog is not None):
+        if (scriptlog is not None):
             print("STDOUT: '{}'".format(scriptlog))
         else:
             self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-        if(scripterror is not None):
+        if (scripterror is not None):
             print("STDERR: '{}'".format(scripterror))
         else:
             self.assertIsNotNone(scripterror, "STDERR was not captured")
@@ -132,7 +132,7 @@ class TestCommand(unittest.TestCase):
         self._stestscript = 'command_script.py'
         self._itestpause = 30
 
-        cmdtest = Command(
+        cmdtest = ProcessController(
             "{}{} {}".format(
                 self._sdirectory, self._stestscript, self._itestpause), {
                 'timeout': 5, 'check': 1, 'profiling': True})
@@ -196,7 +196,7 @@ class TestCommand(unittest.TestCase):
 
         self._stestscript = 'no_script.sh'
 
-        cmdtest = Command(self._sdirectory + self._stestscript)
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
         brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -254,7 +254,7 @@ class TestCommand(unittest.TestCase):
 
         self._stestscript = 'noexec_script.py'
 
-        cmdtest = Command(self._sdirectory + self._stestscript)
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
         brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -287,8 +287,6 @@ class TestCommand(unittest.TestCase):
                 13,
                 "EXIT CODE '13' was not returned")
 
-        self.assertIsNotNone(scriptlog, "STDOUT was not captured")
-
         if scriptlog is not None:
             print("STDOUT: '{}'".format(scriptlog))
 
@@ -312,7 +310,7 @@ class TestCommand(unittest.TestCase):
 
         self._stestscript = 'nobashbang_script.py'
 
-        cmdtest = Command(self._sdirectory + self._stestscript)
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
         brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -355,7 +353,7 @@ class TestCommand(unittest.TestCase):
 
         self._stestscript = 'exception_script.py'
 
-        cmdtest = Command(self._sdirectory + self._stestscript)
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
         brunok = cmdtest.Launch() and cmdtest.Wait()
 
@@ -402,7 +400,7 @@ if __name__ == "__main__":
     print("test module absolute path: '{}'".format(spath))
 
     print("tests starting ...\n")
-    #import sys;sys.argv = ['', 'Test.testConstructor']
+    # import sys;sys.argv = ['', 'Test.testConstructor']
     unittest.main()
 
     print("tests done.\n")

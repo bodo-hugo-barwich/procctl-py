@@ -1,25 +1,26 @@
 #!/usr/bin/python3
 '''
-Tests to verify the CommandGroup Class Functionality
+Tests to verify the ProcessGroup Class Functionality
 
-@version: 2021-04-25
+@version: 2025-09-26
 
 @author: Bodo Hugo Barwich
 '''
-from libcommand import CommandGroup
-from libcommand import Command
 import sys
 import os
 import unittest
 import time
-#import re
-#from re import IGNORECASE
+# import re
+# from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
 
+from procctl import ProcessGroup
+from procctl import ProcessController
 
-class TestCommandGroup(unittest.TestCase):
+
+class TestProcessGroup(unittest.TestCase):
 
     _sdirectory = ''
     _smodule = ''
@@ -49,32 +50,32 @@ class TestCommandGroup(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_CommandGroupRun(self):
+    def test_ProcessGroupRun(self):
         print("{} - go ...".format(sys._getframe().f_code.co_name))
 
         self._stestscript = 'command_script.py'
 
-        cmdgrp = CommandGroup()
+        cmdgrp = ProcessGroup()
         imaxpause = 3
 
-        cmd = Command(
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 1), {
+                'name': 'command-script:1s'})
+
+        cmdgrp.Add(cmd)
+
+        cmd = ProcessController(
             "{}{} {}".format(
                 self._sdirectory, self._stestscript, 2), {
                 'name': 'command-script:2s'})
 
         cmdgrp.Add(cmd)
 
-        cmd = Command(
+        cmd = ProcessController(
             "{}{} {}".format(
                 self._sdirectory, self._stestscript, 3), {
                 'name': 'command-script:3s'})
-
-        cmdgrp.Add(cmd)
-
-        cmd = Command(
-            "{}{} {}".format(
-                self._sdirectory, self._stestscript, 1), {
-                'name': 'command-script:1s'})
 
         cmdgrp.Add(cmd)
 
@@ -89,7 +90,7 @@ class TestCommandGroup(unittest.TestCase):
         itmstrt = time.time()
         itmend = -1
 
-        print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+        print("Process Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
         # Execute the Commands
         bcmdrs = cmdgrp.Run()
@@ -97,25 +98,25 @@ class TestCommandGroup(unittest.TestCase):
         itmend = time.time()
         itm = (itmend - itmstrt) * 1000
 
-        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-        print("Command Group Execution finished in '{}' ms".format(itm))
+        print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Process Group Execution finished in '{}' ms".format(itm))
 
         itm = int(itmend - itmstrt)
 
-        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+        print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+        print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
         self.assertTrue(
             bcmdrs,
-            "Command Group Execution: Execution was not correct")
+            "Process Group Execution: Execution was not correct")
 
         self.assertEqual(
             itm,
             imaxpause,
-            "Command Group Execution longer than maximal Execution Time '{}' s" .format(imaxpause))
+            "Process Group Execution longer than maximal Execution Time '{}' s" .format(imaxpause))
 
         self.assertEqual(
             cmdgrp.code,
@@ -123,13 +124,13 @@ class TestCommandGroup(unittest.TestCase):
             "Process Group Execution: ERROR CODE is not correct")
 
         for icmd in range(0, cmdcnt):
-            cmd = cmdgrp.getiCommand(icmd)
+            cmd = cmdgrp.getiProcess(icmd)
 
             self.assertIsNotNone(
-                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                cmd, "Process No. '$iprc': Not listed correctly".format(icmd))
 
             if cmd is not None:
-                print("Command {}:".format(cmd.getNameComplete()))
+                print("Process {}:".format(cmd.getNameComplete()))
 
                 scriptlog = cmd.report
                 scripterror = cmd.error
@@ -154,30 +155,36 @@ class TestCommandGroup(unittest.TestCase):
 
         print("")
 
-    def test_CommandGroupProfiling(self):
+    def test_ProcessGroupProfiling(self):
         print("{} - go ...".format(sys._getframe().f_code.co_name))
 
         self._stestscript = 'command_script.py'
 
-        cmdgrp = CommandGroup()
+        cmdgrp = ProcessGroup()
         imaxpause = 9
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
-                      'name': 'command-script:9s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 9), {
+                'name': 'command-script:9s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
-                      'name': 'command-script:3s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 3), {
+                'name': 'command-script:3s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
-                      'name': 'command-script:5s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 5), {
+                'name': 'command-script:5s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
@@ -185,7 +192,7 @@ class TestCommandGroup(unittest.TestCase):
 
         cmdgrp.setReadTimeout(2)
 
-        cmdcnt = cmdgrp.len
+        cmdcnt = cmdgrp.getProcessCount()
 
         self.assertEqual(
             cmdcnt,
@@ -196,7 +203,7 @@ class TestCommandGroup(unittest.TestCase):
         itmstrt = time.time()
         itmend = -1
 
-        print("Command Group Execution Start - Time Now: '{}' s".format(itmstrt))
+        print("Process Group Execution Start - Time Now: '{}' s".format(itmstrt))
 
         # Execute the Commands
         bcmdrs = cmdgrp.Run()
@@ -204,26 +211,26 @@ class TestCommandGroup(unittest.TestCase):
         itmend = time.time()
         itm = (itmend - itmstrt) * 1000
 
-        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-        print("Command Group Execution finished in '{}' ms".format(itm))
+        print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Process Group Execution finished in '{}' ms".format(itm))
 
         itm = int(itmend - itmstrt)
 
-        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+        print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+        print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
         self.assertTrue(
             bcmdrs,
-            "Command Group Execution: Execution was not correct")
+            "Process Group Execution: Execution was not correct")
 
         for icmd in range(0, cmdcnt):
-            cmd = cmdgrp.getiCommand(icmd)
+            cmd = cmdgrp.getiProcess(icmd)
 
             self.assertIsNotNone(
-                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                cmd, "Process No. '$iprc': Not listed correctly".format(icmd))
 
             if cmd is not None:
                 print("Command {}:".format(cmd.getNameComplete()))
@@ -259,30 +266,36 @@ class TestCommandGroup(unittest.TestCase):
 
         print("")
 
-    def test_CommandGroupProfilingQuiet(self):
+    def test_ProcessGroupProfilingQuiet(self):
         print("{} - go ...".format(sys._getframe().f_code.co_name))
 
         self._stestscript = 'quiet_script.py'
 
-        cmdgrp = CommandGroup()
+        cmdgrp = ProcessGroup()
         imaxpause = 9
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
-                      'name': 'quiet-script:9s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 9), {
+                'name': 'quiet-script:9s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
-                      'name': 'quiet-script:3s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 3), {
+                'name': 'quiet-script:3s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = Command("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
-                      'name': 'quiet-script:5s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 5), {
+                'name': 'quiet-script:5s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
@@ -312,29 +325,29 @@ class TestCommandGroup(unittest.TestCase):
         itmend = time.time()
         itm = (itmend - itmstrt) * 1000
 
-        print("Command Group Execution End - Time Now: '{}' s".format(itmend))
-        print("Command Group Execution finished in '{}' ms".format(itm))
+        print("Process Group Execution End - Time Now: '{}' s".format(itmend))
+        print("Process Group Execution finished in '{}' ms".format(itm))
 
         itm = int(itmend - itmstrt)
 
-        print("Command Group Execution Time '{} / {}' s".format(itm, imaxpause))
+        print("Process Group Execution Time '{} / {}' s".format(itm, imaxpause))
 
-        print("Command Group ERROR CODE: '{}'".format(cmdgrp.code))
-        print("Command Group STDOUT:\n'{}'".format(cmdgrp.report))
-        print("Command Group STDERR:\n'{}'".format(cmdgrp.error))
+        print("Process Group ERROR CODE: '{}'".format(cmdgrp.code))
+        print("Process Group STDOUT:\n'{}'".format(cmdgrp.report))
+        print("Process Group STDERR:\n'{}'".format(cmdgrp.error))
 
         self.assertTrue(
             bcmdrs,
-            "Command Group Execution: Execution was not correct")
+            "Process Group Execution: Execution was not correct")
 
         for icmd in range(0, cmdcnt):
-            cmd = cmdgrp.getiCommand(icmd)
+            cmd = cmdgrp.getiProcess(icmd)
 
             self.assertIsNotNone(
-                cmd, "Command No. '$iprc': Not listed correctly".format(icmd))
+                cmd, "Process No. '$iprc': Not listed correctly".format(icmd))
 
             if cmd is not None:
-                print("Command {}:".format(cmd.getNameComplete()))
+                print("Process {}:".format(cmd.getNameComplete()))
 
                 scriptlog = cmd.report
                 scripterror = cmd.error
@@ -376,7 +389,7 @@ if __name__ == "__main__":
     print("test module absolute path: '{}'".format(spath))
 
     print("tests starting ...\n")
-    #import sys;sys.argv = ['', 'Test.testConstructor']
+    # import sys;sys.argv = ['', 'Test.testConstructor']
     unittest.main()
 
     print("tests done.\n")

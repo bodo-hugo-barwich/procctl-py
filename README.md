@@ -1,132 +1,140 @@
-[![Automated Tests](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml) [![Build Status](https://app.travis-ci.com/bodo-hugo-barwich/pycommand.svg?branch=master)](https://app.travis-ci.com/bodo-hugo-barwich/pycommand)
+[![Automated Tests](https://github.com/bodo-hugo-barwich/procctl-py/actions/workflows/python-package.yml/badge.svg)](https://github.com/bodo-hugo-barwich/pycommand/actions/workflows/python-package.yml)
 
-# Command
+# ProcessController
 
-Command - Python Package for Multiprocessing
+ProcessController - Python Package for Multiprocessing
 
-Provides Classes to launch Child Processes asynchronously.\
-The **Object Oriented Design** allows to create Groups of Child Processes and Child Process Pools to launch several child processes in an organized manner.
+Provides classes to launch child processes asynchronously.\
+The **Object Oriented Design** allows to create groups of child processes to launch several child processes in an organized manner.
 
 ## Features
 Some important Features are:
-* Low Dependencies (uses only Python Core Packages)\
+* Low Dependencies (uses only _Python_ core packages)\
   Low Dependency Usage leads to:
-  	* Very High Compatibility (only Python 3 is required)
+  	* Very High Compatibility (only _Python 3_ is required)
   	* Easy Installation
-	* Small Memory Footprint (Simple Structure Design leads to low Memory Usage)
-	* Fast Startup (very few additional Libraries to load)
+	* Small Memory Footprint (simple structure design leads to low memory usage)
+	* Fast Startup (very few additional libraries to load)
 * Asynchronous Launch
-* Reads Big Outputs
-* Execution Timeout
-* Configurable Read Interval
-* Captures possible System Errors at Launch Time like "file not found" Errors
-* Streamlined Error Handling while still providing the Outputs
+* Reads big outputs
+* Execution time-out
+* Configurable read interval
+* Captures possible system errors at launch time like "file not found" errors
+* Streamlined error handling while still providing the outputs
 
 ## Motivation
-This Module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
+This module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and error messages and exit codes separately. \
 As it is documented in [Python Documentation - Thread-based parallelism](https://docs.python.org/3.8/library/threading.html?highlight=thread#module-threading)
 and [Python - Global Interpreter Lock](https://docs.python.org/3.8/glossary.html#term-global-interpreter-lock)
 processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes. \
 The _Python_ implementation was derived from a prototype I developed at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
-Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions. \
-This implementation aimes especially for Low Dependencies and Easy Installation.
+Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a procedural replacement for this function without the need of special error handling of possible Exceptions. \
+This implementation aimes especially for low dependencies and easy installation.
 
 ### Example Use Case
-The Power of this Library is best shown by an Example Use Case as seen in the `test_CommandGroupRun()` Test:\
-Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.\
-But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.\
-And still each Job can be evaluated separately by their own Results keeping Log Message separate from Error Messages and viewing them in their context.
-```text
-setUp - go ...
-setUp - Test Directory: '/home/runner/work/pycommand/pycommand/tests/'
-setUp - Test Module: 'commandgrouptests.py'
+The power of this library is best shown by an example use case as seen in the `test_ProcessGroupRun()` Test:\
+Having 3 Jobs at hand of 9 seconds, 3 seconds and 5 seconds running them sequencially would take aproximately **17 seconds**.\
+But using the `ProcessGroup` Class it takes effectively only **9 - 11 seconds** to complete.\
+And still each job can be evaluated separately by their own results keeping log message separate from error messages and viewing them in their context.
+```plain
+test module absolute path: '/home/runner/work/procctl-py/procctl-py/tests/processgrouptests.py'
+tests starting ...
 
-test_CommandGroupRun - go ...
-Command Group Execution Start - Time Now: '1619689908.3838296' s
-Command Group Execution End - Time Now: '1619689911.4230719' s
-Command Group Execution finished in '3039.2422676086426' ms
-Command Group Execution Time '3 / 3' s
-Command Group ERROR CODE: '0'
-Command Group STDOUT:
-'2021-04-29 09:51:48 : Sub Process No. '0' - 'command-script:2s': Launching ...
-2021-04-29 09:51:48 : Sub Process No. '0' - 'command-script:2s': Launch OK - PID (1656)
-2021-04-29 09:51:48 : Sub Process No. '1' - 'command-script:3s': Launching ...
-2021-04-29 09:51:48 : Sub Process No. '1' - 'command-script:3s': Launch OK - PID (1657)
-2021-04-29 09:51:48 : Sub Process No. '2' - 'command-script:1s': Launching ...
-2021-04-29 09:51:48 : Sub Process No. '2' - 'command-script:1s': Launch OK - PID (1658)
-2021-04-29 09:51:49 : Sub Process (1658) 'command-script:1s': finished with [0]
-2021-04-29 09:51:50 : Sub Process (1656) 'command-script:2s': finished with [0]
-2021-04-29 09:51:51 : Sub Process (1657) 'command-script:3s': finished with [0]
+setUp - go ...
+setUp - Test Directory: '/home/runner/work/procctl-py/procctl-py/tests/'
+setUp - Test Module: 'processgrouptests.py'
+
+test_ProcessGroupProfiling - go ...
+Process Group Execution Start - Time Now: '1761894376.4318516' s
+Process Group Execution End - Time Now: '1761894387.4570518' s
+Process Group Execution finished in '11025.200128555298' ms
+Process Group Execution Time '11 / 9' s
+Process Group ERROR CODE: '0'
+Process Group STDOUT:
+'2025-10-31 07:06:16 : Sub Process No. '0' - 'command-script:9s': Launching ...
+2025-10-31 07:06:16 : Sub Process No. '0' - 'command-script:9s': Launch OK - PID (2143)
+2025-10-31 07:06:16 : Sub Process No. '1' - 'command-script:3s': Launching ...
+2025-10-31 07:06:16 : Sub Process No. '1' - 'command-script:3s': Launch OK - PID (2144)
+2025-10-31 07:06:16 : Sub Process No. '2' - 'command-script:5s': Launching ...
+2025-10-31 07:06:16 : Sub Process No. '2' - 'command-script:5s': Launch OK - PID (2145)
+2025-10-31 07:06:20 : Sub Process (2144) 'command-script:3s': finished with [0]
+2025-10-31 07:06:23 : Sub Process (2145) 'command-script:5s': finished with [0]
+2025-10-31 07:06:27 : Sub Process (2143) 'command-script:9s': finished with [0]
 '
-Command Group STDERR:
+Process Group STDERR:
 ''
-Command (1656) 'command-script:2s':
+Command (2143) 'command-script:9s':
+Read Timeout: '2'
+Execution Time: '9.022975206375122'
 ERROR CODE: '0'
 EXIT CODE: '0'
 STDOUT:
-'Start - Time Now: '1619689908.4170215'
+'Start - Time Now: '1761894376.4508772'
 Number of arguments: 2 arguments.
-Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '2']
-test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/procctl-py/procctl-py/tests/command_script.py', '9']
+test script absolute path: '/home/runner/work/procctl-py/procctl-py/tests/command_script.py'
 script 'command_script.py' START 0
-script 'command_script.py' PAUSE '2' ...
+script 'command_script.py' PAUSE '9' ...
 script 'command_script.py' END 1
-End - Time Now: '1619689910.4191885'
-script 'command_script.py' done in '2002.166986465454' ms
+End - Time Now: '1761894385.4511173'
+script 'command_script.py' done in '9000.240087509155' ms
 script 'command_script.py' EXIT '0'
 '
 STDERR:
 'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
 '
-Command (1657) 'command-script:3s':
+Command (2144) 'command-script:3s':
+Read Timeout: '2'
+Execution Time: '4.0230114459991455'
 ERROR CODE: '0'
 EXIT CODE: '0'
 STDOUT:
-'Start - Time Now: '1619689908.418119'
+'Start - Time Now: '1761894376.4463177'
 Number of arguments: 2 arguments.
-Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '3']
-test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/procctl-py/procctl-py/tests/command_script.py', '3']
+test script absolute path: '/home/runner/work/procctl-py/procctl-py/tests/command_script.py'
 script 'command_script.py' START 0
 script 'command_script.py' PAUSE '3' ...
 script 'command_script.py' END 1
-End - Time Now: '1619689911.4193742'
-script 'command_script.py' done in '3001.2552738189697' ms
+End - Time Now: '1761894379.4465017'
+script 'command_script.py' done in '3000.1840591430664' ms
 script 'command_script.py' EXIT '0'
 '
 STDERR:
 'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
 '
-Command (1658) 'command-script:1s':
+Command (2145) 'command-script:5s':
+Read Timeout: '2'
+Execution Time: '7.020789623260498'
 ERROR CODE: '0'
 EXIT CODE: '0'
 STDOUT:
-'Start - Time Now: '1619689908.4242425'
+'Start - Time Now: '1761894376.4510567'
 Number of arguments: 2 arguments.
-Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '1']
-test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/procctl-py/procctl-py/tests/command_script.py', '5']
+test script absolute path: '/home/runner/work/procctl-py/procctl-py/tests/command_script.py'
 script 'command_script.py' START 0
-script 'command_script.py' PAUSE '1' ...
+script 'command_script.py' PAUSE '5' ...
 script 'command_script.py' END 1
-End - Time Now: '1619689909.425416'
-script 'command_script.py' done in '1001.1734962463379' ms
+End - Time Now: '1761894381.4512694'
+script 'command_script.py' done in '5000.212669372559' ms
 script 'command_script.py' EXIT '0'
 '
 STDERR:
 'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
-'
 ```
 
 ## Usage
-### runCommand() Function
-The `runCommand()` Function is easy to use and straight forward.\
-It is best seen in the `pytest` `test_RunCommand()` Test:\
+### runProcess() Function
+The `runProcess()` Function is easy to use and straight forward.\
+It is best seen in the `pytest` `test_RunProcess()` Test:\
 ```python
-from libcommand import runCommand
+from procctl import runProcess
 
 
 sdirectory = os.getcwd() + '/'
@@ -151,50 +159,54 @@ print("Test Directory: '{}'".format(sdirectory))
 print("Test Module: '{}'".format(smodule))
 
 
-def test_RunCommand():
-  print("{} - go ...".format(sys._getframe().f_code.co_name))
+def test_RunProcess():
+    print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-  stestscript = 'command_script.py'
-  itestpause = 3
+    stestscript = 'command_script.py'
+    itestpause = 3
 
-  arrrs = runCommand("{}{} {} {}".format(sdirectory, stestscript, itestpause, iteststatus))
+    arrrs = runProcess(
+        "{}{} {} {}".format(
+            sdirectory,
+            stestscript,
+            itestpause,
+            iteststatus))
 
-  print("EXIT CODE: '{}'".format(arrrs[2]));
+    print("EXIT CODE: '{}'".format(arrrs[2]))
 
-  assert arrrs[0] != '', "STDOUT was not captured."
+    assert arrrs[0] != '', "STDOUT was not captured."
 
-  print("STDOUT: '{}'".format(arrrs[0]));
+    print("STDOUT: '{}'".format(arrrs[0]))
 
-  assert arrrs[1] != '', "STDERR was not captured."
+    assert arrrs[1] != '', "STDERR was not captured."
 
-  print("STDERR: '{}'".format(arrrs[1]));
+    print("STDERR: '{}'".format(arrrs[1]))
 
-  print("")
-
+    print("")
 
 ```
 
-The Output shows how STDOUT, STDERR and EXIT Code are cleanly separated.\
-This will produce the Output:
-```text
+The output shows how `STDOUT`, `STDERR` and **EXIT Code** are cleanly separated.\
+This will produce the output:
+```plain
 setUp - go ...
-setUp - Test Directory: '/path/to/pycommand/tests'
-setUp - Test Module: './commandtests.py'
+setUp - Test Directory: '/home/runner/work/procctl-py/procctl-py/tests/'
+setUp - Test Module: 'controllertests.py'
 
-test_RunCommand - go ...
+test_RunProcess - go ...
 EXIT CODE: '4'
-STDOUT: 'Start - Time Now: '1617575015.5021873'
+STDOUT: 'Start - Time Now: '1761894373.3652184'
 Number of arguments: 3 arguments.
-Argument List: ['/path/to/pycommand/tests/test_script.py', '3', '4']
-test script absolute path: '/path/to/pycommand/tests/test_script.py'
-script 'test_script.py' START 0
-script 'test_script.py' PAUSE '3' ...
-script 'test_script.py' END 1
-End - Time Now: '1617575018.503503'
-script 'test_script.py' done in '3001.3158321380615' ms
-script 'test_script.py' EXIT '4'
+Argument List: ['/home/runner/work/procctl-py/procctl-py/tests/command_script.py', '3', '4']
+test script absolute path: '/home/runner/work/procctl-py/procctl-py/tests/command_script.py'
+script 'command_script.py' START 0
+script 'command_script.py' PAUSE '3' ...
+script 'command_script.py' END 1
+End - Time Now: '1761894376.3653963'
+script 'command_script.py' done in '3000.1778602600098' ms
+script 'command_script.py' EXIT '4'
 '
-STDERR: 'script 'test_script.py' START 0 ERROR
-script 'test_script.py' END 1 ERROR
+STDERR: 'script 'command_script.py' START 0 ERROR
+script 'command_script.py' END 1 ERROR
 '
 ```

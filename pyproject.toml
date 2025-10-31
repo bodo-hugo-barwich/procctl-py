@@ -1,12 +1,12 @@
 [project]
-name = "pycommand"
+name = "procctl-py"
 version = "1.0.0"
 authors = [
   { name="Bodo (Hugo) Barwich", email="b.barwich@hotmail.com" },
 ]
 description = "Classes to launch Child Processes asynchronously"
 readme = "README.md"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -14,9 +14,16 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/bodo-hugo-barwich/pycommand"
-Issues = "https://github.com/bodo-hugo-barwich/pycommand/issues"
+Homepage = "https://github.com/bodo-hugo-barwich/procctl-py"
+Issues = "https://github.com/bodo-hugo-barwich/procctl-py/issues"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+testpaths = ["tests"]
+addopts = [
+    "--import-mode=importlib",
+]
