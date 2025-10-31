@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Classes to launch Child Processes asynchronously"
 readme = "README.md"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -18,7 +18,7 @@ Homepage = "https://github.com/bodo-hugo-barwich/procctl-py"
 Issues = "https://github.com/bodo-hugo-barwich/procctl-py/issues"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]

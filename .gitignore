@@ -7,7 +7,7 @@
 */os
 */unittest
 dist/**
-pycommand.egg-info/**
+*.egg-info/**
 
 #Exclude Test Log Files
 *.log
