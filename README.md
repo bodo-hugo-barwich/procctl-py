@@ -16,27 +16,27 @@ Some important Features are:
 	* Small Memory Footprint (simple structure design leads to low memory usage)
 	* Fast Startup (very few additional libraries to load)
 * Asynchronous Launch
-* Reads Big Outputs
-* Execution Timeout
-* Configurable Read Interval
-* Captures possible System Errors at Launch Time like "file not found" Errors
-* Streamlined Error Handling while still providing the Outputs
+* Reads big outputs
+* Execution time-out
+* Configurable read interval
+* Captures possible system errors at launch time like "file not found" errors
+* Streamlined error handling while still providing the outputs
 
 ## Motivation
-This Module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and error messages and Exit Codes separately. \
+This module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and error messages and exit codes separately. \
 As it is documented in [Python Documentation - Thread-based parallelism](https://docs.python.org/3.8/library/threading.html?highlight=thread#module-threading)
 and [Python - Global Interpreter Lock](https://docs.python.org/3.8/glossary.html#term-global-interpreter-lock)
 processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes. \
 The _Python_ implementation was derived from a prototype I developed at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
-Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions. \
-This implementation aimes especially for Low Dependencies and Easy Installation.
+Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a procedural replacement for this function without the need of special error handling of possible Exceptions. \
+This implementation aimes especially for low dependencies and easy installation.
 
 ### Example Use Case
-The power of this library is best shown by an example use case as seen in the `test_CommandGroupRun()` Test:\
-Having 3 Jobs at hand of 2 seconds, 3 seconds and 1 second running them sequencially would take aproximately **6 seconds**.\
-But using the `CommandGroup` Class it takes effectively only **3 seconds** to complete.\
+The power of this library is best shown by an example use case as seen in the `test_ProcessGroupRun()` Test:\
+Having 3 Jobs at hand of 9 seconds, 3 seconds and 5 seconds running them sequencially would take aproximately **17 seconds**.\
+But using the `ProcessGroup` Class it takes effectively only **9 - 11 seconds** to complete.\
 And still each job can be evaluated separately by their own results keeping log message separate from error messages and viewing them in their context.
 ```plain
 test module absolute path: '/home/runner/work/procctl-py/procctl-py/tests/processgrouptests.py'
@@ -127,8 +127,6 @@ script 'command_script.py' EXIT '0'
 STDERR:
 'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
-----------------------------------------------------------------------
-Ran 3 tests in 26.051s
 ```
 
 ## Usage
