@@ -6,6 +6,8 @@ Tests to verify the CommandGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
+from procctl import ProcessGroup
+from procctl import ProcessController
 import sys
 import os
 import time
@@ -14,10 +16,6 @@ from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
-
-from procctl import ProcessController
-from procctl import ProcessGroup
-
 
 
 sdirectory = os.getcwd() + '/'

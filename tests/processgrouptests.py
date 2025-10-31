@@ -6,18 +6,17 @@ Tests to verify the ProcessGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
+from procctl import ProcessGroup
+from procctl import ProcessController
 import sys
 import os
 import unittest
 import time
-#import re
-#from re import IGNORECASE
+# import re
+# from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
-
-from procctl import ProcessController
-from procctl import ProcessGroup
 
 
 class TestProcessGroup(unittest.TestCase):
@@ -163,22 +162,28 @@ class TestProcessGroup(unittest.TestCase):
         cmdgrp = ProcessGroup()
         imaxpause = 9
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
-                      'name': 'command-script:9s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 9), {
+                'name': 'command-script:9s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
-                      'name': 'command-script:3s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 3), {
+                'name': 'command-script:3s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
-                      'name': 'command-script:5s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 5), {
+                'name': 'command-script:5s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
@@ -268,22 +273,28 @@ class TestProcessGroup(unittest.TestCase):
         cmdgrp = ProcessGroup()
         imaxpause = 9
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 9), {
-                      'name': 'quiet-script:9s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 9), {
+                'name': 'quiet-script:9s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 3), {
-                      'name': 'quiet-script:3s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 3), {
+                'name': 'quiet-script:3s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
         cmdgrp.Add(cmd)
 
-        cmd = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, 5), {
-                      'name': 'quiet-script:5s', 'profiling': True})
+        cmd = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, 5), {
+                'name': 'quiet-script:5s', 'profiling': True})
 
         self.assertTrue(cmd.profiling, 'Profiling is not activated')
 
@@ -377,7 +388,7 @@ if __name__ == "__main__":
     print("test module absolute path: '{}'".format(spath))
 
     print("tests starting ...\n")
-    #import sys;sys.argv = ['', 'Test.testConstructor']
+    # import sys;sys.argv = ['', 'Test.testConstructor']
     unittest.main()
 
     print("tests done.\n")

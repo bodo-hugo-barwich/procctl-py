@@ -12,7 +12,7 @@ import sys
 import time
 
 
-if(len(sys.argv) > 1):
+if (len(sys.argv) > 1):
     try:
         ipause = int(sys.argv[1])
     except Exception as e:
@@ -21,7 +21,7 @@ if(len(sys.argv) > 1):
 else:
     ipause = 0
 
-if(len(sys.argv) > 2):
+if (len(sys.argv) > 2):
     try:
         ierr = int(sys.argv[2])
     except Exception as e:
@@ -30,10 +30,10 @@ if(len(sys.argv) > 2):
 else:
     ierr = 0
 
-if(ipause < 0):
+if (ipause < 0):
     ipause = 0
 
-if(ierr < 0):
+if (ierr < 0):
     ierr = 1
 
 time.sleep(ipause)

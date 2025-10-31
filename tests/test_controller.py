@@ -6,6 +6,8 @@ Tests to verify the Command Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
+from procctl import runProcess
+from procctl import ProcessController
 import sys
 import os
 import re
@@ -13,9 +15,6 @@ from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
-
-from procctl import ProcessController
-from procctl import runProcess
 
 
 sdirectory = os.getcwd() + '/'
@@ -72,7 +71,11 @@ def test_ReadTimeout():
     stestscript = 'command_script.py'
     itestpause = 3
 
-    cmdtest = ProcessController("{}{} {}".format(sdirectory, stestscript, itestpause))
+    cmdtest = ProcessController(
+        "{}{} {}".format(
+            sdirectory,
+            stestscript,
+            itestpause))
 
     cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
@@ -93,12 +96,12 @@ def test_ReadTimeout():
     assert cmdtest.getExecutionTime() < cmdtest.getReadTimeout(
     ) * 2, "Measured Time is greater or equal than the Read Timeout"
 
-    if(scriptlog is not None):
+    if (scriptlog is not None):
         print("STDOUT: '{}'".format(scriptlog))
     else:
         assert scriptlog is not None, "STDOUT was not captured"
 
-    if(scripterror is not None):
+    if (scripterror is not None):
         print("STDERR: '{}'".format(scripterror))
     else:
         assert scripterror is not None, "STDERR was not captured"
@@ -112,8 +115,10 @@ def test_ExecutionTimeout():
     stestscript = 'command_script.py'
     itestpause = 30
 
-    cmdtest = ProcessController("{}{} {}".format(sdirectory, stestscript, itestpause), {
-                      'timeout': 5, 'check': 1, 'profiling': True})
+    cmdtest = ProcessController(
+        "{}{} {}".format(
+            sdirectory, stestscript, itestpause), {
+            'timeout': 5, 'check': 1, 'profiling': True})
 
     assert cmdtest.getTimeout() != -1, 'Execution Timeout is not set'
     assert cmdtest.isProfiling(), 'Profiling is not enabled'

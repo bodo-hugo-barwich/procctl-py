@@ -6,6 +6,8 @@ Tests to verify the Command Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
+from procctl import runProcess
+from procctl import ProcessController
 import sys
 import os
 import unittest
@@ -14,9 +16,6 @@ from re import IGNORECASE
 
 sys.path.append("./")
 sys.path.append("../")
-
-from procctl import ProcessController
-from procctl import runProcess
 
 
 class TestProcessController(unittest.TestCase):
@@ -115,12 +114,12 @@ class TestProcessController(unittest.TestCase):
             cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2,
             "Measured Time is greater or equal than the Read Timeout")
 
-        if(scriptlog is not None):
+        if (scriptlog is not None):
             print("STDOUT: '{}'".format(scriptlog))
         else:
             self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-        if(scripterror is not None):
+        if (scripterror is not None):
             print("STDERR: '{}'".format(scripterror))
         else:
             self.assertIsNotNone(scripterror, "STDERR was not captured")
@@ -401,7 +400,7 @@ if __name__ == "__main__":
     print("test module absolute path: '{}'".format(spath))
 
     print("tests starting ...\n")
-    #import sys;sys.argv = ['', 'Test.testConstructor']
+    # import sys;sys.argv = ['', 'Test.testConstructor']
     unittest.main()
 
     print("tests done.\n")
