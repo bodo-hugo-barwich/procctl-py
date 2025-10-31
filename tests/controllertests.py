@@ -6,8 +6,6 @@ Tests to verify the Command Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
-from procctl import runProcess
-from procctl import ProcessController
 import sys
 import os
 import unittest
@@ -17,6 +15,8 @@ from re import IGNORECASE
 sys.path.append("./")
 sys.path.append("../")
 
+from procctl import runProcess
+from procctl import ProcessController
 
 class TestProcessController(unittest.TestCase):
 

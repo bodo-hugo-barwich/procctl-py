@@ -6,8 +6,6 @@ Tests to verify the ProcessGroup Class Functionality
 
 @author: Bodo Hugo Barwich
 '''
-from procctl import ProcessGroup
-from procctl import ProcessController
 import sys
 import os
 import unittest
@@ -17,6 +15,9 @@ import time
 
 sys.path.append("./")
 sys.path.append("../")
+
+from procctl import ProcessGroup
+from procctl import ProcessController
 
 
 class TestProcessGroup(unittest.TestCase):
