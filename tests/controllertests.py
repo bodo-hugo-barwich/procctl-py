@@ -19,340 +19,389 @@ from procctl import ProcessController
 from procctl import runProcess
 
 
-
 class TestProcessController(unittest.TestCase):
 
-  _sdirectory = ''
-  _smodule = ''
-  _stestscript = 'command_script.py'
-  _itestpause = 3
-  _iteststatus = 4
+    _sdirectory = ''
+    _smodule = ''
+    _stestscript = 'command_script.py'
+    _itestpause = 3
+    _iteststatus = 4
 
+    def setUp(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-  def setUp(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self._sdirectory = os.getcwd() + '/'
+        self._stestscript = 'command_script.py'
+        self._itestpause = 3
 
-    self._sdirectory = os.getcwd() + '/'
-    self._stestscript = 'command_script.py'
-    self._itestpause = 3
+        spath = os.path.abspath(__file__)
 
-    spath = os.path.abspath(__file__);
+        slashpos = spath.rfind('/', 0)
 
-    slashpos = spath.rfind('/', 0)
+        if slashpos != -1:
+            self._sdirectory = spath[0: slashpos + 1]
+            self._smodule = spath[slashpos + 1: len(spath)]
+        else:
+            self._smodule = spath
 
-    if slashpos != -1 :
-      self._sdirectory = spath[0 : slashpos + 1]
-      self._smodule = spath[slashpos + 1 : len(spath)]
-    else :
-      self._smodule = spath
+        print("setUp - Test Directory: '{}'".format(self._sdirectory))
+        print("setUp - Test Module: '{}'".format(self._smodule))
+        print("")
 
-    print("setUp - Test Directory: '{}'".format(self._sdirectory))
-    print("setUp - Test Module: '{}'".format(self._smodule))
-    print("")
+    def tearDown(self):
+        pass
 
+    def test_RunProcess(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-  def tearDown(self):
-    pass
+        self._stestscript = 'command_script.py'
+        self._itestpause = 3
 
+        arrrs = runProcess(
+            "{}{} {} {}".format(
+                self._sdirectory,
+                self._stestscript,
+                self._itestpause,
+                self._iteststatus))
 
-  def test_RunProcess(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        print("EXIT CODE: '{}'".format(arrrs[2]))
 
-    self._stestscript = 'command_script.py'
-    self._itestpause = 3
+        self.assertFalse(arrrs[0] == '', "STDOUT was not captured.")
 
-    arrrs = runProcess("{}{} {} {}".format(self._sdirectory, self._stestscript, self._itestpause, self._iteststatus))
+        print("STDOUT: '{}'".format(arrrs[0]))
 
-    print("EXIT CODE: '{}'".format(arrrs[2]));
+        self.assertFalse(arrrs[1] == '', "STDERR was not captured.")
 
-    self.assertFalse(arrrs[0] == '', "STDOUT was not captured.")
+        print("STDERR: '{}'".format(arrrs[1]))
 
-    print("STDOUT: '{}'".format(arrrs[0]));
+        print("")
 
-    self.assertFalse(arrrs[1] == '', "STDERR was not captured.")
+    def test_ReadTimeout(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    print("STDERR: '{}'".format(arrrs[1]));
+        self._stestscript = 'command_script.py'
+        self._itestpause = 3
 
-    print("")
+        cmdtest = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory,
+                self._stestscript,
+                self._itestpause))
 
+        cmdtest.setDictOptions({'check': 2, 'profiling': True})
 
-  def test_ReadTimeout(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self.assertNotEqual(cmdtest.getReadTimeout(), -
+                            1, 'Read Timeout is not set')
+        self.assertTrue(cmdtest.isProfiling(), 'Profiling is not enabled')
 
-    self._stestscript = 'command_script.py'
-    self._itestpause = 3
+        self.assertTrue(
+            cmdtest.Launch(),
+            "script '{}': Launch failed!".format(
+                self._stestscript))
+        self.assertTrue(
+            cmdtest.Wait(),
+            "script '{}': Execution failed!".format(
+                self._stestscript))
 
-    cmdtest = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause))
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
-    cmdtest.setDictOptions({'check': 2, 'profiling': True})
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
+        print("Execution Time: '{}'".format(cmdtest.execution_time))
 
-    self.assertNotEqual(cmdtest.getReadTimeout(), -1, 'Read Timeout is not set')
-    self.assertTrue(cmdtest.isProfiling(), 'Profiling is not enabled')
+        self.assertTrue(
+            cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2,
+            "Measured Time is greater or equal than the Read Timeout")
 
-    self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
-    self.assertTrue(cmdtest.Wait(), "script '{}': Execution failed!".format(self._stestscript))
+        if(scriptlog is not None):
+            print("STDOUT: '{}'".format(scriptlog))
+        else:
+            self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
+        if(scripterror is not None):
+            print("STDERR: '{}'".format(scripterror))
+        else:
+            self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
-    print("Execution Time: '{}'".format(cmdtest.execution_time));
+        print("")
 
-    self.assertTrue(cmdtest.getExecutionTime() < cmdtest.getReadTimeout() * 2\
-    , "Measured Time is greater or equal than the Read Timeout")
+    def test_ExecutionTimeout(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    if(scriptlog is not None):
-      print("STDOUT: '{}'".format(scriptlog))
-    else:
-      self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+        self._stestscript = 'command_script.py'
+        self._itestpause = 30
 
-    if(scripterror is not None):
-      print("STDERR: '{}'".format(scripterror))
-    else:
-      self.assertIsNotNone(scripterror, "STDERR was not captured")
+        cmdtest = ProcessController(
+            "{}{} {}".format(
+                self._sdirectory, self._stestscript, self._itestpause), {
+                'timeout': 5, 'check': 1, 'profiling': True})
 
-    print("")
+        self.assertNotEqual(cmdtest.getTimeout(), -1,
+                            'Execution Timeout is not set')
+        self.assertNotEqual(cmdtest.isProfiling(), 'Profiling is not enabled')
 
+        self.assertTrue(
+            cmdtest.Launch(),
+            "script '{}': Launch failed!".format(
+                self._stestscript))
+        self.assertFalse(
+            cmdtest.Wait(),
+            "script '{}': Execution did not fail".format(
+                self._stestscript))
 
-  def test_ExecutionTimeout(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
-    self._stestscript = 'command_script.py'
-    self._itestpause = 30
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
+        print("Execution Time: '{}'".format(cmdtest.execution_time))
 
-    cmdtest = ProcessController("{}{} {}".format(self._sdirectory, self._stestscript, self._itestpause)\
-      , {'timeout': 5, 'check': 1, 'profiling': True})
+        self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
 
-    self.assertNotEqual(cmdtest.getTimeout(), -1, 'Execution Timeout is not set')
-    self.assertNotEqual(cmdtest.isProfiling(), 'Profiling is not enabled')
+        if iscriptstatus == -15:
+            # Script informs Termination Signal
+            self.assertEqual(iscriptstatus, -15, "EXIT CODE is not correct")
+        else:
+            # Script informs Termination Signal
+            self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
 
-    self.assertTrue(cmdtest.Launch(), "script '{}': Launch failed!".format(self._stestscript))
-    self.assertFalse(cmdtest.Wait(), "script '{}': Execution did not fail".format(self._stestscript))
+        self.assertTrue(
+            cmdtest.getExecutionTime() < self._itestpause,
+            "Measured Time is greater or equal than the Full Run Time")
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
+        self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
-    print("Execution Time: '{}'".format(cmdtest.execution_time));
+        if scriptlog is not None:
+            print("STDOUT: '{}'".format(scriptlog))
 
-    self.assertEqual(cmdtest.code, 4, "ERROR CODE '4' was not returned")
+        self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-    if iscriptstatus == -15 :
-      #Script informs Termination Signal
-      self.assertEqual(iscriptstatus, -15, "EXIT CODE is not correct")
-    else :
-      #Script informs Termination Signal
-      self.assertTrue(iscriptstatus <= 4, "EXIT CODE is not correct")
+        if scripterror is not None:
+            print("STDERR: '{}'".format(scripterror))
 
-    self.assertTrue(cmdtest.getExecutionTime() < self._itestpause\
-    , "Measured Time is greater or equal than the Full Run Time")
+            pat_tmout = re.compile('Execution timed out', re.IGNORECASE)
 
-    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+            self.assertIsNotNone(
+                pat_tmout.search(scripterror),
+                "STDERR does not report Execution Timeout")
 
-    if scriptlog is not None :
-      print("STDOUT: '{}'".format(scriptlog))
+        # if scripterror is not None
 
-    self.assertIsNotNone(scripterror, "STDERR was not captured")
+        print("")
 
-    if scripterror is not None :
-      print("STDERR: '{}'".format(scripterror))
+    def test_ScriptNotFound(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-      pat_tmout = re.compile('Execution timed out', re.IGNORECASE)
+        self._stestscript = 'no_script.sh'
 
-      self.assertIsNotNone(pat_tmout.search(scripterror), "STDERR does not report Execution Timeout")
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
-    #if scripterror is not None
+        brunok = cmdtest.Launch() and cmdtest.Wait()
 
-    print("")
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
 
-  def test_ScriptNotFound(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        if iscriptstatus == -1:
+            self.assertFalse(
+                brunok, "script '{}': Execution did not fail".format(
+                    self._stestscript))
+        else:
+            self.assertFalse(
+                brunok, "script '{}': Execution did not fail".format(
+                    self._stestscript))
 
-    self._stestscript = 'no_script.sh'
+        self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
 
-    cmdtest = ProcessController(self._sdirectory + self._stestscript)
+        if iscriptstatus == 255:
+            self.assertEqual(
+                iscriptstatus,
+                255,
+                "EXIT CODE '255' was not returned")
+        else:
+            self.assertEqual(
+                iscriptstatus,
+                2,
+                "EXIT CODE '2' was not returned")
 
-    brunok = cmdtest.Launch() and cmdtest.Wait()
+        self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
+        if scriptlog is not None:
+            print("STDOUT: '{}'".format(scriptlog))
 
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
+        self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-    if iscriptstatus == -1 :
-      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
-    else :
-      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+        if scripterror is not None:
+            print("STDERR: '{}'".format(scripterror))
 
-    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+            pat_ntfnd = re.compile('no such file', re.IGNORECASE)
 
-    if iscriptstatus == 255 :
-      self.assertEqual(iscriptstatus, 255, "EXIT CODE '255' was not returned")
-    else :
-      self.assertEqual(iscriptstatus, 2, "EXIT CODE '2' was not returned")
+            self.assertIsNotNone(
+                pat_ntfnd.search(scripterror),
+                "STDERR does not report Not Found Error")
 
-    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+        # if scripterror is not None
 
-    if scriptlog is not None :
-      print("STDOUT: '{}'".format(scriptlog))
+        print("")
 
-    self.assertIsNotNone(scripterror, "STDERR was not captured")
+    def test_NoPermission(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    if scripterror is not None :
-      print("STDERR: '{}'".format(scripterror))
+        self._stestscript = 'noexec_script.py'
 
-      pat_ntfnd = re.compile('no such file', re.IGNORECASE)
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
-      self.assertIsNotNone(pat_ntfnd.search(scripterror), "STDERR does not report Not Found Error")
+        brunok = cmdtest.Launch() and cmdtest.Wait()
 
-    #if scripterror is not None
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
-    print("")
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
 
+        if iscriptstatus == -1:
+            self.assertFalse(
+                brunok, "script '{}': Execution did not fail".format(
+                    self._stestscript))
+        else:
+            self.assertFalse(
+                brunok, "script '{}': Execution did not fail".format(
+                    self._stestscript))
 
-  def test_NoPermission(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
 
-    self._stestscript = 'noexec_script.py'
+        if iscriptstatus == 255:
+            self.assertEqual(
+                iscriptstatus,
+                255,
+                "EXIT CODE '255' was not returned")
+        else:
+            self.assertEqual(
+                iscriptstatus,
+                13,
+                "EXIT CODE '13' was not returned")
 
-    cmdtest = ProcessController(self._sdirectory + self._stestscript)
+        if scriptlog is not None:
+            print("STDOUT: '{}'".format(scriptlog))
 
-    brunok = cmdtest.Launch() and cmdtest.Wait()
+        self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
+        if scripterror is not None:
+            print("STDERR: '{}'".format(scripterror))
 
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
+            pat_noperm = re.compile('permission denied', re.IGNORECASE)
 
-    if iscriptstatus == -1 :
-      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
-    else :
-      self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+            self.assertIsNotNone(
+                pat_noperm.search(scripterror),
+                "STDERR does not report No Permission Error")
 
-    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+        # if scripterror is not None
 
-    if iscriptstatus == 255 :
-      self.assertEqual(iscriptstatus, 255, "EXIT CODE '255' was not returned")
-    else :
-      self.assertEqual(iscriptstatus, 13, "EXIT CODE '13' was not returned")
+        print("")
 
-    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+    def test_BashError(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    if scriptlog is not None :
-      print("STDOUT: '{}'".format(scriptlog))
+        self._stestscript = 'nobashbang_script.py'
 
-    self.assertIsNotNone(scripterror, "STDERR was not captured")
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
-    if scripterror is not None :
-      print("STDERR: '{}'".format(scripterror))
+        brunok = cmdtest.Launch() and cmdtest.Wait()
 
-      pat_noperm = re.compile('permission denied', re.IGNORECASE)
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
-      self.assertIsNotNone(pat_noperm.search(scripterror), "STDERR does not report No Permission Error")
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
 
-    #if scripterror is not None
+        self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
+        self.assertEqual(iscriptstatus, 8, "EXIT CODE '8' was not returned")
+        self.assertFalse(
+            brunok,
+            "script '{}': Execution did not fail".format(
+                self._stestscript))
 
-    print("")
+        self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
+        if scriptlog is not None:
+            print("STDOUT: '{}'".format(scriptlog))
 
-  def test_BashError(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-    self._stestscript = 'nobashbang_script.py'
+        if scripterror is not None:
+            print("STDERR: '{}'".format(scripterror))
 
-    cmdtest = ProcessController(self._sdirectory + self._stestscript)
+            pat_synerr = re.compile('exec format error', re.IGNORECASE)
 
-    brunok = cmdtest.Launch() and cmdtest.Wait()
+            self.assertIsNotNone(
+                pat_synerr.search(scripterror),
+                "STDERR does not report Bash Error")
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
+        # if scripterror is not None
 
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
+        print('')
 
-    self.assertEqual(cmdtest.code, 1, "ERROR CODE '1' was not returned")
-    self.assertEqual(iscriptstatus, 8, "EXIT CODE '8' was not returned")
-    self.assertFalse(brunok, "script '{}': Execution did not fail".format(self._stestscript))
+    def test_PythonException(self):
+        print("{} - go ...".format(sys._getframe().f_code.co_name))
 
-    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
+        self._stestscript = 'exception_script.py'
 
-    if scriptlog is not None :
-      print("STDOUT: '{}'".format(scriptlog))
+        cmdtest = ProcessController(self._sdirectory + self._stestscript)
 
-    self.assertIsNotNone(scripterror, "STDERR was not captured")
+        brunok = cmdtest.Launch() and cmdtest.Wait()
 
-    if scripterror is not None :
-      print("STDERR: '{}'".format(scripterror))
+        scriptlog = cmdtest.report
+        scripterror = cmdtest.error
+        iscriptstatus = cmdtest.status
 
-      pat_synerr = re.compile('exec format error', re.IGNORECASE)
+        print("ERROR CODE: '{}'".format(cmdtest.code))
+        print("EXIT CODE: '{}'".format(iscriptstatus))
 
-      self.assertIsNotNone(pat_synerr.search(scripterror), "STDERR does not report Bash Error")
+        self.assertEqual(cmdtest.code, 0, "ERROR CODE '0' was not returned")
+        self.assertEqual(iscriptstatus, 1, "EXIT CODE '1' was not returned")
+        self.assertTrue(
+            brunok,
+            "script '{}': Execution did fail".format(
+                self._stestscript))
 
-    #if scripterror is not None
+        self.assertIsNotNone(scriptlog, "STDOUT was not captured")
 
-    print('')
+        if scriptlog is not None:
+            print("STDOUT: '{}'".format(scriptlog))
 
+        self.assertIsNotNone(scripterror, "STDERR was not captured")
 
-  def test_PythonException(self):
-    print("{} - go ...".format(sys._getframe().f_code.co_name))
+        if scripterror is not None:
+            print("STDERR: '{}'".format(scripterror))
 
-    self._stestscript = 'exception_script.py'
+            pat_except = re.compile('python exception', re.IGNORECASE)
 
-    cmdtest = ProcessController(self._sdirectory + self._stestscript)
+            self.assertIsNotNone(
+                pat_except.search(scripterror),
+                "STDERR does not report the Python Exeception")
 
-    brunok = cmdtest.Launch() and cmdtest.Wait()
+        # if scripterror is not None
 
-    scriptlog = cmdtest.report
-    scripterror = cmdtest.error
-    iscriptstatus = cmdtest.status
-
-    print("ERROR CODE: '{}'".format(cmdtest.code))
-    print("EXIT CODE: '{}'".format(iscriptstatus))
-
-    self.assertEqual(cmdtest.code, 0, "ERROR CODE '0' was not returned")
-    self.assertEqual(iscriptstatus, 1, "EXIT CODE '1' was not returned")
-    self.assertTrue(brunok, "script '{}': Execution did fail".format(self._stestscript))
-
-    self.assertIsNotNone(scriptlog, "STDOUT was not captured")
-
-    if scriptlog is not None :
-      print("STDOUT: '{}'".format(scriptlog))
-
-    self.assertIsNotNone(scripterror, "STDERR was not captured")
-
-    if scripterror is not None :
-      print("STDERR: '{}'".format(scripterror))
-
-      pat_except = re.compile('python exception', re.IGNORECASE)
-
-      self.assertIsNotNone(pat_except.search(scripterror), "STDERR does not report the Python Exeception");
-
-    #if scripterror is not None
-
-    print('')
-
+        print('')
 
 
 if __name__ == "__main__":
-  print("test module: '{}'".format(__file__))
+    print("test module: '{}'".format(__file__))
 
-  spath = os.path.abspath(__file__)
+    spath = os.path.abspath(__file__)
 
-  print("test module absolute path: '{}'".format(spath))
+    print("test module absolute path: '{}'".format(spath))
 
-  print("tests starting ...\n")
-  #import sys;sys.argv = ['', 'Test.testConstructor']
-  unittest.main()
+    print("tests starting ...\n")
+    #import sys;sys.argv = ['', 'Test.testConstructor']
+    unittest.main()
 
-  print("tests done.\n")
-
+    print("tests done.\n")

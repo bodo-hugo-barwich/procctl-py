@@ -1,4 +1,4 @@
-!#/usr/bin/python3
+!  # /usr/bin/python3
 '''
 This Script is the Test Script which is run in the Command Module Test
 It features and Syntax Error in the Bash Bang

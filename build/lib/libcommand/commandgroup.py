@@ -1,8 +1,8 @@
 '''
-This module provides the `ProcessGroup` class which manages multiple `ProcessController` objects.
-It executes and monitors the `ProcessController` objects.
+This Module provides the `CommandGroup` Class which manages multiple `Command` objects.
+It executes and monitores the `Command` objects.
 
-:version: 2025-09-26
+:version: 2021-04-18
 
 :author: Bodo Hugo Barwich
 '''
@@ -13,19 +13,19 @@ import math
 import time
 from datetime import datetime
 
-from .controller import ProcessController
+from .command import Command
 
 
 
 #==============================================================================
-# The ProcessGroup Class
+# The CommandGroup Class
 
 
-class ProcessGroup(object):
+class CommandGroup(object):
   '''
-  This is a Class to manage multiple `ProcessController` objects whose execution is related in time.
+  This is a Class to manage multiple `Command` object whom execution is related in time.
 
-  It offers Methods to run, monitor and access the `ProcessController` objects
+  It offers Methods to run, monitor and access the `Command` objects
   '''
 
 
@@ -163,7 +163,7 @@ class ProcessGroup(object):
     if ocommand is not None :
       ors = ocommand
 
-      if not isinstance(ors, ProcessController) :
+      if not isinstance(ors, Command) :
         ors = None
 
     #if ocommand is not None
@@ -171,7 +171,7 @@ class ProcessGroup(object):
     if ors is None :
       #Create a new Command Object
       #Pass the Read Timeout to the new Object
-      ors = ProcessController(None, {'readtimeout': self._read_timeout})
+      ors = Command(None, {'readtimeout': self._read_timeout})
 
     #Add the Command Object to the List
     self._arr_commands.append(ors)
@@ -181,7 +181,7 @@ class ProcessGroup(object):
 
   def addsCommandLine(self, scommandline = '', options = {}):
     #Create a new Command Object
-    ors = ProcessController(scommandline, options)
+    ors = Command(scommandline, options)
 
     #Add the Command Object to the List
     self._arr_commands.append(ors)
@@ -249,10 +249,10 @@ class ProcessGroup(object):
     return irs
 
 
-  def checkiProcess(self, iindex):
+  def checkiCommand(self, iindex):
     brs = False
 
-    cmd =  self.getiProcess(iindex)
+    cmd =  self.getiCommand(iindex)
 
     if cmd is not None :
       if cmd.isRunning():
@@ -506,7 +506,7 @@ class ProcessGroup(object):
   #Consultation Methods
 
 
-  def getiProcess(self, iindex):
+  def getiCommand(self, iindex):
     rscmd = None
 
     try :
@@ -534,7 +534,7 @@ class ProcessGroup(object):
     return self._execution_timeout
 
 
-  def getProcessCount(self):
+  def getCommandCount(self):
     return len(self._arr_commands)
 
 
@@ -614,7 +614,7 @@ class ProcessGroup(object):
   running = property(getRunningCount)
   free = property(getFreeCount)
   finished = property(getFinishedCount)
-  len = property(getProcessCount)
+  len = property(getCommandCount)
   read_timeout = property(getReadTimeout, setReadTimeout)
   timeout = property(getTimeout, setTimeout)
   #execution_time = property(getExecutionTime)

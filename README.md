@@ -23,8 +23,11 @@ Some important Features are:
 * Streamlined Error Handling while still providing the Outputs
 
 ## Motivation
-This module was conceived out of the need to launch multiple Tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
-As I developed it as Prototype at:
+This Module was conceived out of the need to launch multiple tasks simultaneously while still keeping each Log and Error Messages and Exit Codes separately. \
+As it is documented in [Python Documentation - Thread-based parallelism](https://docs.python.org/3.8/library/threading.html?highlight=thread#module-threading)
+and [Python - Global Interpreter Lock](https://docs.python.org/3.8/glossary.html#term-global-interpreter-lock)
+processor intensive tasks cannot run in _Python_ threads and are advised to be executed in multiple processes. \
+The _Python_ implementation was derived from a prototype I developed at:
 [Multi Process Manager](https://stackoverflow.com/questions/50177534/why-do-pipes-from-child-processes-break-sometimes-and-sometimes-not)\
 The **Object Oriented Design** permits the implementation of the **[Command Pattern / Manager-Worker Pattern](https://en.wikipedia.org/wiki/Command_pattern)**.\
 Providing a similar functionality as the [`subprocess.run()` Function](https://docs.python.org/3/library/subprocess.html#subprocess.run) it can serve as a Procedural Replacement for this function without the need of special error handling of possible Exceptions. \
@@ -45,61 +48,81 @@ setUp - Test Directory: '/path/to/procctl-py/tests/'
 setUp - Test Module: 'processgrouptests.py'
 
 test_CommandGroupRun - go ...
-Command Group Execution Start - Time Now: '1619352416.777284' s
-Command Group Execution End - Time Now: '1619352419.8313038' s
-Command Group Execution finished in '3054.0199279785156' ms
+Command Group Execution Start - Time Now: '1619689908.3838296' s
+Command Group Execution End - Time Now: '1619689911.4230719' s
+Command Group Execution finished in '3039.2422676086426' ms
 Command Group Execution Time '3 / 3' s
-Command  (4202) 'command-script:2s' :
-ERROR CODE: ' 0 '
+Command Group ERROR CODE: '0'
+Command Group STDOUT:
+'2021-04-29 09:51:48 : Sub Process No. '0' - 'command-script:2s': Launching ...
+2021-04-29 09:51:48 : Sub Process No. '0' - 'command-script:2s': Launch OK - PID (1656)
+2021-04-29 09:51:48 : Sub Process No. '1' - 'command-script:3s': Launching ...
+2021-04-29 09:51:48 : Sub Process No. '1' - 'command-script:3s': Launch OK - PID (1657)
+2021-04-29 09:51:48 : Sub Process No. '2' - 'command-script:1s': Launching ...
+2021-04-29 09:51:48 : Sub Process No. '2' - 'command-script:1s': Launch OK - PID (1658)
+2021-04-29 09:51:49 : Sub Process (1658) 'command-script:1s': finished with [0]
+2021-04-29 09:51:50 : Sub Process (1656) 'command-script:2s': finished with [0]
+2021-04-29 09:51:51 : Sub Process (1657) 'command-script:3s': finished with [0]
+'
+Command Group STDERR:
+''
+Command (1656) 'command-script:2s':
+ERROR CODE: '0'
 EXIT CODE: '0'
-STDOUT: ' Start - Time Now: '1619352416.82219'
+STDOUT:
+'Start - Time Now: '1619689908.4170215'
 Number of arguments: 2 arguments.
-Argument List: ['/path/to/pycommand/tests/command_script.py', '2']
-test script absolute path: '/path/to/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '2']
+test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
 script 'command_script.py' START 0
 script 'command_script.py' PAUSE '2' ...
 script 'command_script.py' END 1
-End - Time Now: '1619352418.8242822'
-script 'command_script.py' done in '2002.0921230316162' ms
+End - Time Now: '1619689910.4191885'
+script 'command_script.py' done in '2002.166986465454' ms
 script 'command_script.py' EXIT '0'
- '
-STDERR: ' script 'command_script.py' START 0 ERROR
+'
+STDERR:
+'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
- '
-Command  (4203) 'command-script:3s' :
-ERROR CODE: ' 0 '
+'
+Command (1657) 'command-script:3s':
+ERROR CODE: '0'
 EXIT CODE: '0'
-STDOUT: ' Start - Time Now: '1619352416.824399'
+STDOUT:
+'Start - Time Now: '1619689908.418119'
 Number of arguments: 2 arguments.
-Argument List: ['/path/to/pycommand/tests/command_script.py', '3']
-test script absolute path: '/path/to/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '3']
+test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
 script 'command_script.py' START 0
 script 'command_script.py' PAUSE '3' ...
 script 'command_script.py' END 1
-End - Time Now: '1619352419.8276176'
-script 'command_script.py' done in '3003.218650817871' ms
+End - Time Now: '1619689911.4193742'
+script 'command_script.py' done in '3001.2552738189697' ms
 script 'command_script.py' EXIT '0'
- '
-STDERR: ' script 'command_script.py' START 0 ERROR
+'
+STDERR:
+'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
- '
-Command  (4204) 'command-script:1s' :
-ERROR CODE: ' 0 '
+'
+Command (1658) 'command-script:1s':
+ERROR CODE: '0'
 EXIT CODE: '0'
-STDOUT: ' Start - Time Now: '1619352416.8315842'
+STDOUT:
+'Start - Time Now: '1619689908.4242425'
 Number of arguments: 2 arguments.
-Argument List: ['/path/to/pycommand/tests/command_script.py', '1']
-test script absolute path: '/path/to/pycommand/tests/command_script.py'
+Argument List: ['/home/runner/work/pycommand/pycommand/tests/command_script.py', '1']
+test script absolute path: '/home/runner/work/pycommand/pycommand/tests/command_script.py'
 script 'command_script.py' START 0
 script 'command_script.py' PAUSE '1' ...
 script 'command_script.py' END 1
-End - Time Now: '1619352417.832275'
-script 'command_script.py' done in '1000.6906986236572' ms
+End - Time Now: '1619689909.425416'
+script 'command_script.py' done in '1001.1734962463379' ms
 script 'command_script.py' EXIT '0'
- '
-STDERR: ' script 'command_script.py' START 0 ERROR
+'
+STDERR:
+'script 'command_script.py' START 0 ERROR
 script 'command_script.py' END 1 ERROR
- '
+'
 ```
 
 ## Usage
@@ -155,7 +178,7 @@ def test_RunCommand():
 
 ```
 
-The Output shows how STDOUT, STDERR and EXIT Code are cleanly seperated.\
+The Output shows how STDOUT, STDERR and EXIT Code are cleanly separated.\
 This will produce the Output:
 ```text
 setUp - go ...
